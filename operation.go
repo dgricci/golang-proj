@@ -6,11 +6,43 @@ package proj
 #include <stdlib.h>
 #include <string.h>
 #include "proj.h"
+
+char **makeStringArray2 ( size_t l ) {
+    return (char **)calloc(l,sizeof(char*));
+}
+void setStringArrayItem2 ( const char **t, size_t i, const char *v) {
+    t[i] = v;
+}
+const char *getStringArrayItem2 ( const char **t, size_t i) {
+    return t[i];
+}
+void destroyStringArray2 ( char ***t ) {
+    free(*t);
+    *t = NULL;
+}
+
+char *listcat3 ( PROJ_STRING_LIST sl ) {
+    size_t l = 0;
+    char *result = NULL;
+    PROJ_STRING_LIST iterator = NULL;
+    if (sl == NULL) return NULL ;
+    for (iterator = sl; *iterator; iterator++) {
+        l += strlen(*iterator);
+    }
+    result = (char *)malloc(l+1);
+    if (result == NULL) return NULL;
+    result[0] = '\0';
+    for (iterator = sl; *iterator; iterator++) {
+        result = strcat(result, *iterator);
+    }
+    return result;
+}
  */
 import "C"
 
 import (
     "unsafe"
+    "strings"
     "fmt"
 )
 
@@ -30,8 +62,17 @@ var (
 //
 // When `bbox` is not defined then only the first element is considered :
 //
+//   ope, e = NewOperation(ctx, nil, "EPSG:9616")
+//
 //   ope, e = NewOperation(ctx, nil, "+proj=utm +zone=32 +ellps=GRS80")
+//
 //   ope, e = NewOperation(ctx, nil, "urn:ogc:def:coordinateOperation:EPSG::1671")
+//
+//   ope, e = NewOperation(ctx, nil, "WKT string")
+//
+// with the exception of :
+//
+//   ope, e = NewOperation(ctx, nil, "proj=utm", "zone=32", "ellps=GRS80")
 //
 // otherwise the two first elements are considered to create a transformation object
 // that is a pipeline between two known coordinate reference system
@@ -41,16 +82,61 @@ var (
 //
 func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e error) {
     var pj *C.PJ
-    dA := C.CString(def[0])
-    defer C.free(unsafe.Pointer(dA))
-    if bbox != nil {
-        if len(def) >= 2 {
-            dB := C.CString(def[1])
-            defer C.free(unsafe.Pointer(dB))
-            pj = C.proj_create_crs_to_crs((*ctx).pj, dA, dB, (*bbox).pj)
+    l := len(def)
+    if l == 0 {
+        e = fmt.Errorf(C.GoString(C.proj_errno_string(-1)))
+        return
+    }
+    dialect := GuessedWKTUnknown
+    cdef := C.CString(def[0])
+    defer C.free(unsafe.Pointer(cdef))
+    if l == 1 {
+        dialect = GuessedWKTDialect(C.proj_context_guess_wkt_dialect((*ctx).pj, cdef))
+    }
+    switch dialect {
+    case GuessedWKTUnknown  :
+        switch {
+        case l==1 :
+            ac := strings.Split(def[0],":")
+            if len(ac) == 2 {// <AUTH>:<CODE>
+                cauth := C.CString(ac[0])
+                defer C.free(unsafe.Pointer(cauth))
+                cname := C.CString(ac[1])
+                defer C.free(unsafe.Pointer(cname))
+                pj = C.proj_create_from_database((*ctx).pj, cauth, cname, C.PJ_CATEGORY_COORDINATE_OPERATION, 0, nil)
+            } else {
+                d := C.CString(def[0])
+                defer C.free(unsafe.Pointer(d))
+                pj = C.proj_create((*ctx).pj, d)
+            }
+        case l==2 && bbox != nil :// src and tgt CRSs
+            dsrc := C.CString(def[0])
+            defer C.free(unsafe.Pointer(dsrc))
+            dtgt := C.CString(def[1])
+            defer C.free(unsafe.Pointer(dtgt))
+            pj = C.proj_create_crs_to_crs((*ctx).pj, dsrc, dtgt, (*bbox).pj)
+        default :
+            defs := C.makeStringArray2(C.size_t(l))
+            for i, partdef := range def {
+                partd := C.CString(partdef)
+                C.setStringArrayItem2(defs, C.size_t(i), partd)
+            }
+            pj = C.proj_create_argv((*ctx).pj, C.int(l), defs)
+            for i := 0 ; i < l ; i++ {
+                C.free(unsafe.Pointer(C.getStringArrayItem2(defs,C.size_t(i))))
+            }
+            C.destroyStringArray2(&defs)
         }
-    } else {
-        pj = C.proj_create((*ctx).pj, dA)
+    default:// WKT
+        var ce C.PROJ_STRING_LIST
+        pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
+        if ce != (C.PROJ_STRING_LIST)(nil) {// FIXME : PROJ 6.1.0 should return an error with proj_context_errno
+            cm := C.listcat3(ce)
+            defer C.free(unsafe.Pointer(cm))
+            defer C.proj_string_list_destroy(ce)
+            e = fmt.Errorf(C.GoString(cm))
+            return
+        }
     }
     if pj == (*C.PJ)(nil) {
         e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
@@ -65,6 +151,7 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
         return
     default :
         op.DestroyOperation()
+        op = nil
         e = fmt.Errorf("%v does not yield an Operation", def)
     }
     return

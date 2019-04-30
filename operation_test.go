@@ -3,6 +3,7 @@ package proj
 import (
     "testing"
     "reflect"
+    "strings"
     "math"
 )
 
@@ -40,6 +41,23 @@ func TestOperation ( t *testing.T ) {
     if !o.HandleIsNil() {
         t.Errorf("Failed to deallocate the newly created transformation '%s'", s)
     }
+    s = `CONVERSION["PROJ-based coordinate operation",METHOD["PROJ-based operation method: +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m"]]`
+    o, e = NewOperation(ctx, nil, s)
+    if e != nil {
+        t.Error(e)
+    }
+    o.DestroyOperation()
+    sv := []string{"proj=utm", "zone=32", "ellps=GRS80"}
+    o, e = NewOperation(ctx, nil, strings.Join(sv," +"))
+    if e != nil {
+        t.Error(e)
+    }
+    o.DestroyOperation()
+    o, e = NewOperation(ctx, nil, sv...)
+    if e != nil {
+        t.Error(e)
+    }
+    o.DestroyOperation()
 }
 
 // TestOperation_2 checks creating a pipeline between two crs and transform
