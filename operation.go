@@ -117,9 +117,9 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
          OtherCoordinateOperation :
         return
     default :
+        e = fmt.Errorf("%v does not yield an Operation (%v)", def, Type(op))
         op.DestroyOperation()
         op = nil
-        e = fmt.Errorf("%v does not yield an Operation", def)
     }
     return
 }
