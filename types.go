@@ -157,14 +157,17 @@ const (
 
 // CRSExtentUse speficies how source and target CRS extent should be used to
 // restrict candidate operations (only taken into account if no explicit area
-// of interest is specified).
+// of interest is specified) : area of use of a candidate coordinate operation
+// with a representative area of use of the source and target CRS.
 type CRSExtentUse C.PROJ_CRS_EXTENT_USE
 const (
     // NoExtent ignores CRS extent
     NoExtent CRSExtentUse = C.PJ_CRS_EXTENT_NONE
     // BothExtent tests coordinate operation extent against both CRS extent
     BothExtent CRSExtentUse = C.PJ_CRS_EXTENT_BOTH
-    // IntersectionExtent tests coordinate operation extent against both CRS extent
+    // IntersectionExtent tests coordinate operation extent against both CRS
+    // extents : area of use contains at least the area of use of the source
+    // and target CRS.
     IntersectionExtent CRSExtentUse = C.PJ_CRS_EXTENT_INTERSECTION
     // SmallestExtent tests coordinate operation against the smallest of both CRS extent
     SmallestExtent CRSExtentUse = C.PJ_CRS_EXTENT_SMALLEST
