@@ -1,0 +1,9 @@
+# Gopkg.toml project dependencies
+#
+# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# for detailed Gopkg.toml documentation.
+#
+[metadata]
+codename = "PROJ"
+comment = "Wrapper in Golang for the C/C++ PROJ library"
+

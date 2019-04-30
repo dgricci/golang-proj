@@ -1,0 +1,14 @@
+.kateproject
+.kateproject.save
+.kateproject.d/**
+.directory
+_c/
+usr/local/src/
+usr/local/bin/
+usr/local/share/man/
+**/_obj_test/*
+**/*.html
+**/*-doc.txt
+**/*.out
+**/*.old
+
