@@ -130,10 +130,10 @@ func TestOperation_3 (t *testing.T ) {
     filter.Pivots["IGNF"] = []string{"LAMB93", "LAMBE"}
     ope, e := crsS.NewOperation(ctx, crsT, filter)
     if e == nil {
+        defer ope.DestroyOperation()
         opeI := ope.Info()
         t.Errorf("Unexpected IGNF operation between '%s' and '%s' : %s", sREUN47GAUSSL, sRGAF09UTM20, opeI.Definition())
     }
-    defer ope.DestroyOperation()
 }
 
 func TestOperation_conversion ( t *testing.T ) {
@@ -159,7 +159,6 @@ func TestOperation_concatenatedoperation ( t *testing.T ) {
 }
 
 func TestOperation_othercoordinateoperation ( t *testing.T ) {
-    t.Skip("Does not work (operation is of TypeUnknown) ???")
     o, e := NewOperation(ctx, &Area{}, "IGNF:NTFLAMB2E.NGF84", "IGNF:ETRS89LCC.EVRF2000")
     if e != nil {
         t.Error(e)

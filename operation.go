@@ -77,11 +77,32 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
                 pj = C.proj_create((*ctx).pj, d)
             }
         case l==2 && bbox != nil :// src and tgt CRSs
-            dsrc := C.CString(def[0])
-            defer C.free(unsafe.Pointer(dsrc))
-            dtgt := C.CString(def[1])
-            defer C.free(unsafe.Pointer(dtgt))
-            pj = C.proj_create_crs_to_crs((*ctx).pj, dsrc, dtgt, (*bbox).pj)
+            // proj_create_crs_to_crs() is a high level function over
+            // proj_create_operations() : it can then returns several
+            // operations (Cf. projinfo -s  -o PROJ -s IGNF:NTFLAMB2E.NGF84 -t IGNF:ETRS89LCC.EVRF2000
+            src, se := NewReferenceSystem(ctx, def[0])
+            if se != nil { e = se ; return }
+            defer src.DestroyReferenceSystem()
+            tgt, te := NewReferenceSystem(ctx, def[1])
+            if te != nil { e = te ; return }
+            defer tgt.DestroyReferenceSystem()
+            opeFactory := C.proj_create_operation_factory_context((*ctx).pj, nil)
+            if opeFactory == (*C.PJ_OPERATION_FACTORY_CONTEXT)(nil) {
+                e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+                return
+            }
+            defer C.proj_operation_factory_context_destroy(opeFactory)
+            candidateOps := C.proj_create_operations((*ctx).pj, (*src).pj, (*tgt).pj, opeFactory)
+            if candidateOps == (*C.PJ_OBJ_LIST)(nil) {
+                e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+                return
+            }
+            defer C.proj_list_destroy(candidateOps)
+            if C.proj_list_get_count(candidateOps) == 0 {
+                e = fmt.Errorf("No operation found between '%s' and '%s'", def[0], def[1])
+                return
+            }
+            pj = C.proj_list_get((*ctx).pj, candidateOps, C.int(0))
         default :
             defs := C.makeStringArray(C.size_t(l))
             for i, partdef := range def {
@@ -127,8 +148,8 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
 // DestroyOperation deallocates the internal Operation object.
 //
 func (op *Operation) DestroyOperation () {
-    if op != nil {
-        (*op).pj = C.proj_destroy((*op).pj)
+    if (*op).pj != nil {
+        C.proj_destroy((*op).pj)
         (*op).pj = nil
     }
 }
