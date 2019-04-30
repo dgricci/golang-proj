@@ -46,7 +46,7 @@ func NewEllipsoid (ctx *Context, def string ) ( ell *Ellipsoid, e error ) {
     defer C.free(unsafe.Pointer(cdef))
     switch dialect := C.proj_context_guess_wkt_dialect((*ctx).pj, cdef) ; GuessedWKTDialect(dialect) {
     case GuessedWKTUnknown  : // URI
-        ac := strings.Split(def,":")
+        ac := strings.Split(def,":") // FIXME urn:ogc:def:ellipsoid::EPSG:code ?
         if len(ac) != 2 {
             e = fmt.Errorf("%v does not yield an Ellipsoid", def)
             return
