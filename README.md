@@ -52,7 +52,7 @@ make install
 
 If the PROJ library and the PROJ files are not installed in usual places
 (like `/usr/lib` or `/usr/lib/x86_64-linux-gnu/` for the former and
-`/usr/share.proj` for the latter), don't forget upon wrapper's installation to
+`/usr/share/proj` for the latter), don't forget upon wrapper's installation to
 have the `LD_LIBRARY_PATH` set to point at the PROJ library and `PROJ_LIB` to
 the directory where `proj.db` is.
 
