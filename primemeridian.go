@@ -59,8 +59,10 @@ func NewPrimeMeridian (ctx *Context, def string ) ( pm *PrimeMeridian, e error )
 // DestroyPrimeMeridian deallocate the internal prime meridian object.
 //
 func (pm *PrimeMeridian) DestroyPrimeMeridian () {
-    (*pm).pj = C.proj_destroy((*pm).pj)
-    (*pm).pj = nil
+    if (*pm).pj != nil {
+        C.proj_destroy((*pm).pj)
+        (*pm).pj = nil
+    }
 }
 
 // Handle returns the PROJ internal object to be passed to the PROJ library

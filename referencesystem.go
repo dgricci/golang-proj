@@ -73,6 +73,7 @@ func NewReferenceSystem ( ctx *Context, def ...string ) (crs *ReferenceSystem, e
     }
     if C.proj_is_crs(pj) == C.int(0) {
         C.proj_destroy(pj)
+        pj = nil
         e = fmt.Errorf("%v does not yield a CRS", def)
         return
     }
@@ -83,8 +84,10 @@ func NewReferenceSystem ( ctx *Context, def ...string ) (crs *ReferenceSystem, e
 // DestroyReferenceSystem deallocates the internal ReferenceSystem object.
 //
 func (crs *ReferenceSystem) DestroyReferenceSystem () {
-    (*crs).pj = C.proj_destroy((*crs).pj)
-    (*crs).pj = nil
+    if (*crs).pj != nil {
+        C.proj_destroy((*crs).pj)
+        (*crs).pj = nil
+    }
 }
 
 // Handle returns the PROJ internal object to be passed to the PROJ library

@@ -59,8 +59,10 @@ func NewEllipsoid (ctx *Context, def string ) ( ell *Ellipsoid, e error ) {
 // DestroyEllipsoid deallocate the internal ellipsoid object.
 //
 func (ell *Ellipsoid) DestroyEllipsoid () {
-    (*ell).pj = C.proj_destroy((*ell).pj)
-    (*ell).pj = nil
+    if (*ell).pj != nil {
+        C.proj_destroy((*ell).pj)
+        (*ell).pj = nil
+    }
 }
 
 // Handle returns the PROJ internal object to be passed to the PROJ library
