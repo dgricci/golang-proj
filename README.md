@@ -1,10 +1,11 @@
-% GOPROJ : A go wrapper for PROJ the coordinate transformation software
-% Didier Richard
-% 2019/03/10
+% GOPROJ : A go wrapper for PROJ the coordinate transformation software  
+% Didier Richard  
+% 2019/03/10  
 
 ---
 
 Revision:
+
     * 2019/03/10 : first release
 
 ---
