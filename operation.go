@@ -1,42 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include <stdlib.h>
-#include <string.h>
-#include "proj.h"
-
-char **makeStringArray2 ( size_t l ) {
-    return (char **)calloc(l,sizeof(char*));
-}
-void setStringArrayItem2 ( const char **t, size_t i, const char *v) {
-    t[i] = v;
-}
-const char *getStringArrayItem2 ( const char **t, size_t i) {
-    return t[i];
-}
-void destroyStringArray2 ( char ***t ) {
-    free(*t);
-    *t = NULL;
-}
-
-char *listcat3 ( PROJ_STRING_LIST sl ) {
-    size_t l = 0;
-    char *result = NULL;
-    PROJ_STRING_LIST iterator = NULL;
-    if (sl == NULL) return NULL ;
-    for (iterator = sl; *iterator; iterator++) {
-        l += strlen(*iterator);
-    }
-    result = (char *)malloc(l+1);
-    if (result == NULL) return NULL;
-    result[0] = '\0';
-    for (iterator = sl; *iterator; iterator++) {
-        result = strcat(result, *iterator);
-    }
-    return result;
-}
+#include "wrapper.h"
  */
 import "C"
 
@@ -116,22 +83,22 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
             defer C.free(unsafe.Pointer(dtgt))
             pj = C.proj_create_crs_to_crs((*ctx).pj, dsrc, dtgt, (*bbox).pj)
         default :
-            defs := C.makeStringArray2(C.size_t(l))
+            defs := C.makeStringArray(C.size_t(l))
             for i, partdef := range def {
                 partd := C.CString(partdef)
-                C.setStringArrayItem2(defs, C.size_t(i), partd)
+                C.setStringArrayItem(defs, C.size_t(i), partd)
             }
             pj = C.proj_create_argv((*ctx).pj, C.int(l), defs)
             for i := 0 ; i < l ; i++ {
-                C.free(unsafe.Pointer(C.getStringArrayItem2(defs,C.size_t(i))))
+                C.free(unsafe.Pointer(C.getStringArrayItem(defs,C.size_t(i))))
             }
-            C.destroyStringArray2(&defs)
+            C.destroyStringArray(&defs)
         }
     default:// WKT
         var ce C.PROJ_STRING_LIST
         pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
         if ce != (C.PROJ_STRING_LIST)(nil) {// FIXME : PROJ 6.1.0 should return an error with proj_context_errno
-            cm := C.listcat3(ce)
+            cm := C.listcat(ce)
             defer C.free(unsafe.Pointer(cm))
             defer C.proj_string_list_destroy(ce)
             e = fmt.Errorf(C.GoString(cm))

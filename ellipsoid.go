@@ -1,28 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include <stdlib.h>
-#include <string.h>
-#include "proj.h"
-
-char *listcat ( PROJ_STRING_LIST sl ) {
-    size_t l = 0;
-    char *result = NULL;
-    PROJ_STRING_LIST iterator = NULL;
-    if (sl == NULL) return NULL ;
-    for (iterator = sl; *iterator; iterator++) {
-        l += strlen(*iterator);
-    }
-    result = (char *)malloc(l+1);
-    if (result == NULL) return NULL;
-    result[0] = '\0';
-    for (iterator = sl; *iterator; iterator++) {
-        result = strcat(result, *iterator);
-    }
-    return result;
-}
+#include "wrapper.h"
  */
 import "C"
 

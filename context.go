@@ -1,14 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include <stdlib.h>
-#include "proj.h"
-        
-char *getAuthorityFromPROJ ( PROJ_STRING_LIST l, int i ) {
-    return l[i];
-}
+#include "wrapper.h"
  */
 import "C"
 import "unsafe"

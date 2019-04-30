@@ -1,10 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include <stdlib.h>
-#include "proj.h"
+#include "wrapper.h"
  */
 import "C"
 

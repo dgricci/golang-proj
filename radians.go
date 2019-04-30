@@ -1,14 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include <stdlib.h>
-#include "proj.h"
-double wrapper_proj_dmstor ( const char *dms ) {
-    char *rs = NULL;
-    return proj_dmstor(dms,&rs);
-}
+#include "wrapper.h"
  */
 import "C"
 

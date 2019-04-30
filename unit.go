@@ -1,22 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include "proj.h"
-
-int nbUnitsFromPROJ ( ) {
-    int n = 0 ;
-    PJ_UNITS *us;
-    for (us = (PJ_UNITS *)proj_list_units(); us->id; us++) { n++; }
-    return n;
-}       
-        
-PJ_UNITS *getUnitFromPROJ ( int i ) {
-    PJ_UNITS *us;
-    us = (PJ_UNITS *)proj_list_units();
-    return us+i;
-}   
+#include "wrapper.h"
  */
 import "C"
 import "fmt"

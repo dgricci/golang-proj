@@ -1,25 +1,9 @@
 package proj
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/usr/local/include
+#cgo CFLAGS: -I. -I${SRCDIR}/usr/local/include
 #cgo LDFLAGS: -L${SRCDIR}/usr/local/lib -lproj
-#include <stdlib.h>
-#include <string.h>
-#include "proj.h"
-
-char **makeStringArray ( size_t l ) {
-    return (char **)calloc(l,sizeof(char*));
-}
-void setStringArrayItem ( const char **t, size_t i, const char *v) {
-    t[i] = v;
-}
-const char *getStringArrayItem ( const char **t, size_t i) {
-    return t[i];
-}
-void destroyStringArray ( char ***t ) {
-    free(*t);
-    *t = NULL;
-}
+#include "wrapper.h"
  */
 import "C"
 
