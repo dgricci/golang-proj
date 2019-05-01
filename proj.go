@@ -19,14 +19,24 @@ var (
     projInfo *Info
 )
 
-// proj exposes methods the return and tests the private PROJ pointer.
+// handle exposes methods to return and tests the private PROJ pointer.
 // It implies type conversion to the right type.
 //
 // Internal use only.
-type pj interface {
-    Info() *ISOInfo         // return information about a specific object
-    Handle() interface{}    // return handle to the underlying PROJ pointer
+//
+type handle interface {
+    Handle() interface{}    // return handle to the underlaying PROJ pointer
     HandleIsNil() bool      // return true if the underlying PROJ pointer is nil
+}
+
+// pj exposes handle methods as well as Info() to get metadata on the
+// underlaying PROJ pointer.
+//
+// Internal use only.
+//
+type pj interface {
+    handle
+    Info() *ISOInfo         // return information about a specific object
 }
 
 // toString returns a string representation of the struct implementing a pj
