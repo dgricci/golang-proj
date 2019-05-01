@@ -140,3 +140,10 @@ func (pm *PrimeMeridian) String ( ) string {
     return pm.Info().Description()
 }
 
+// ProjString returns a proj-string representation of the prime meridian.
+// Empty string is returned on error (sounds to be the case : no conversion).
+//
+func (pm *PrimeMeridian) ProjString ( ctx *Context, styp StringType ) string {
+    return C.GoString(C.proj_as_proj_string((*ctx).pj, (*pm).pj, C.PJ_PROJ_STRING_TYPE(styp), nil))
+}
+

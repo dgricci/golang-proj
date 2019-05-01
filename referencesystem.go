@@ -269,3 +269,10 @@ func (crs *ReferenceSystem) String ( ) string {
     return crs.Info().Description()
 }
 
+// ProjString returns a proj-string representation of the reference system.
+// Empty string is returned on error.
+//
+func (crs *ReferenceSystem) ProjString ( ctx *Context, styp StringType ) string {
+    return C.GoString(C.proj_as_proj_string((*ctx).pj, (*crs).pj, C.PJ_PROJ_STRING_TYPE(styp), nil))
+}
+

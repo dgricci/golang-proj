@@ -143,3 +143,10 @@ func (ell *Ellipsoid) String ( ) string {
     return ell.Info().Description()
 }
 
+// ProjString returns a proj-string representation of the ellipsoid.
+// Empty string is returned on error.
+//
+func (ell *Ellipsoid) ProjString ( ctx *Context, styp StringType ) string {
+    return C.GoString(C.proj_as_proj_string((*ctx).pj, (*ell).pj, C.PJ_PROJ_STRING_TYPE(styp), nil))
+}
+

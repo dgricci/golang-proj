@@ -24,6 +24,8 @@ func ExamplePrimeMeridian () {
     fmt.Printf("l :%10.2f\n", l)
     fmt.Printf("f :%10.2f\n", f)
     fmt.Printf("u :%s\n", u)
+    fmt.Printf("proj-string : %s\n", greenwhich.ProjString(c, Version4))
+
     // Output:
     // id :
     // dsc:Greenwich (Greenwich)
@@ -31,5 +33,7 @@ func ExamplePrimeMeridian () {
     // l :      0.00
     // f :      0.02
     // u :degree
+    // proj-string :
+
 }
 

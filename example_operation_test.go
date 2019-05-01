@@ -84,6 +84,7 @@ func ExampleOperation_locatable () {
     fmt.Printf("def:%s\n", lccI.Definition())
     fmt.Printf("inv:%t\n", lccI.HasInverse())
     fmt.Printf("acc:%e\n", lccI.Accuracy())
+    fmt.Printf("proj-string : %s\n", lcc.ProjString(c, Version4))
 
     // switch to radians ...
     survey := XYQS{x:2.3488000*DegToRad, y:48.8534100*DegToRad, qualityLevel:1, surveyorName:[]byte("me")}
@@ -97,7 +98,9 @@ func ExampleOperation_locatable () {
     // def:proj=lcc lat_1=49 lat_2=44 lat_0=46.5 lon_0=3 x_0=700000 y_0=6600000 ellps=GRS80 towgs84=0,0,0,0,0,0,0 units=m
     // inv:true
     // acc:-1.000000e+00
+    // proj-string : +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m
     // easting: 652.21664, northing: 6861.68261
+
 }
 
 func ExampleOperation_locatablearray () {
@@ -112,6 +115,7 @@ func ExampleOperation_locatablearray () {
     fmt.Printf("def:%s\n", wgs84gI.Definition())
     fmt.Printf("inv:%t\n", wgs84gI.HasInverse())
     fmt.Printf("acc:%e\n", wgs84gI.Accuracy())
+    fmt.Printf("proj-string : %s\n", wgs84g.ProjString(c, Version5))
     wgs84g.DestroyReferenceSystem()
     epsg2154, _ := NewReferenceSystem(c, s2154)
     epsg2154I := epsg2154.Info()
@@ -120,6 +124,7 @@ func ExampleOperation_locatablearray () {
     fmt.Printf("def:%s\n", epsg2154I.Definition())
     fmt.Printf("inv:%t\n", epsg2154I.HasInverse())
     fmt.Printf("acc:%e\n", epsg2154I.Accuracy())
+    fmt.Printf("proj-string : %s\n", epsg2154.ProjString(c, Version5))
     epsg2154.DestroyReferenceSystem()
     wgs84gToEpsg2154, _ := NewOperation(c, &Area{}, s4326, s2154)
     defer wgs84gToEpsg2154.DestroyOperation()
@@ -129,6 +134,7 @@ func ExampleOperation_locatablearray () {
     fmt.Printf("def:%s\n", wgs84gToEpsg2154I.Definition())
     fmt.Printf("inv:%t\n", wgs84gToEpsg2154I.HasInverse())
     fmt.Printf("acc:%e\n", wgs84gToEpsg2154I.Accuracy())
+    fmt.Printf("proj-string : %s\n", wgs84gToEpsg2154.ProjString(c, Version5))
 
     var surveys [365]XYQS
     for r := 0 ; r < 365 ; r++ {
@@ -149,17 +155,21 @@ func ExampleOperation_locatablearray () {
     // def:
     // inv:false
     // acc:-1.000000e+00
+    // proj-string : +proj=longlat +datum=WGS84 +no_defs +type=crs
     // id :
     // dsc:RGF93 / Lambert-93 (RGF93 / Lambert-93)
     // def:
     // inv:false
     // acc:-1.000000e+00
+    // proj-string : +proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs +type=crs
     // id :pipeline
     // dsc:Inverse of RGF93 to WGS 84 (1) + Lambert-93 (Inverse of RGF93 to WGS 84 (1) + Lambert-93)
     // def:proj=pipeline step proj=axisswap order=2,1 step proj=unitconvert xy_in=deg xy_out=rad step proj=lcc lat_0=46.5 lon_0=3 lat_1=49 lat_2=44 x_0=700000 y_0=6600000 ellps=GRS80
     // inv:true
     // acc:1.000000e+00
+    // proj-string : +proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80
     // easting: 652.21664, northing: 6861.68261
     // easting: 652.21664, northing: 6861.68261
+
 }
 

@@ -27,11 +27,15 @@ func ExampleEllipsoid () {
     } else {
         fmt.Printf("b  :%10.2f\n", b)
     }
+    fmt.Printf("proj-string : %s\n", grs80.ProjString(c, Version4))
+
     // Output:
     // id :
     // dsc:GRS 1980 (GRS 1980)
     // def:
     // a  :6378137.00
     // rf :    298.26
+    // proj-string : +ellps=GRS80
+
 }
 

@@ -229,3 +229,10 @@ func (op *Operation) String ( ) string {
     return op.Info().Description()
 }
 
+// ProjString returns a proj-string representation of the operation.
+// Empty string is returned on error.
+//
+func (op *Operation) ProjString ( ctx *Context, styp StringType ) string {
+    return C.GoString(C.proj_as_proj_string((*ctx).pj, (*op).pj, C.PJ_PROJ_STRING_TYPE(styp), nil))
+}
+
