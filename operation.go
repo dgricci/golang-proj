@@ -217,7 +217,7 @@ func (op *Operation) Factors ( c *Coordinate) ( f *Factors, e error ) {
     return
 }
 
-// Info returns information about a specific reference system object.
+// Info returns information about a specific operation object.
 //
 func (op *Operation) Info ( ) ( *ISOInfo ) {
     return &ISOInfo{pj:C.proj_pj_info((*op).pj)}
