@@ -19,7 +19,7 @@ func ExampleReferenceSystem () {
     fmt.Printf("def:%s\n", crsI.Definition())
     fmt.Printf("inv:%t\n", crsI.HasInverse())
     fmt.Printf("acc:%e\n", crsI.Accuracy())
-    fmt.Printf("proj-string : %s\n", crs.ProjString(c, Version4))
+    fmt.Printf("proj-string : %s\n", crs.ProjString(c, Version4, "USE_APPROX_TMERC=YES"))
     fmt.Printf("WKT : %s\n", crs.Wkt(c, WKTv1GDAL, "MULTILINE=NO", "OUTPUT_AXIS=AUTO"))
     crs.DestroyReferenceSystem()
 
@@ -55,7 +55,7 @@ func ExampleReferenceSystem () {
     // def:
     // inv:false
     // acc:-1.000000e+00
-    // proj-string : +proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs +type=crs
+    // proj-string : +proj=utm +approx +zone=32 +ellps=GRS80 +units=m +no_defs +type=crs
     // WKT : PROJCS["unknown",GEOGCS["unknown",DATUM["Unknown_based_on_GRS80_ellipsoid",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",9],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]
     // id :
     // dsc:WGS 84

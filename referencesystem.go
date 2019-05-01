@@ -271,9 +271,13 @@ func (crs *ReferenceSystem) String ( ) string {
 
 // ProjString returns a proj-string representation of the reference system.
 // Empty string is returned on error.
+// `opts` can hold the following strings :
 //
-func (crs *ReferenceSystem) ProjString ( ctx *Context, styp StringType ) string {
-    return toProj(ctx, crs, styp)
+//   "USE_APPROX_TMERC=YES" to add the +approx flag to +proj=tmerc or
+//   +proj=utm
+//
+func (crs *ReferenceSystem) ProjString ( ctx *Context, styp StringType, opts ...string ) string {
+    return toProj(ctx, crs, styp, opts)
 }
 
 // Wkt return returns a WKT representation of the reference system.

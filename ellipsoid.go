@@ -146,8 +146,8 @@ func (ell *Ellipsoid) String ( ) string {
 // ProjString returns a proj-string representation of the ellipsoid.
 // Empty string is returned on error.
 //
-func (ell *Ellipsoid) ProjString ( ctx *Context, styp StringType ) string {
-    return toProj(ctx, ell, styp)
+func (ell *Ellipsoid) ProjString ( ctx *Context, styp StringType, opts ...string ) string {
+    return toProj(ctx, ell, styp, nil)
 }
 
 // Wkt returns a WKT representation of the ellipsoid.

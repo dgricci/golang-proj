@@ -232,8 +232,8 @@ func (op *Operation) String ( ) string {
 // ProjString returns a proj-string representation of the operation.
 // Empty string is returned on error.
 //
-func (op *Operation) ProjString ( ctx *Context, styp StringType ) string {
-    return toProj(ctx, op, styp)
+func (op *Operation) ProjString ( ctx *Context, styp StringType, opts ...string ) string {
+    return toProj(ctx, op, styp, opts)
 }
 
 // Wkt returns a WKT representation of the operation.

@@ -14,10 +14,11 @@ func ExampleOperation () {
     defer c.DestroyContext()
 
     utm, _ := NewOperation(c, nil, utm32PROJString)
-    defer utm.DestroyOperation()
     if utm == nil {
         fmt.Println("Oops (utm)")
+        return
     }
+    defer utm.DestroyOperation()
     // a coordinate representing Copenhagen: 55d N, 12d E
     // note: PROJ works in radians, hence the DegToRad conversion
     a := NewCoordinate(DegToRad*12, DegToRad*55)

@@ -49,9 +49,28 @@ func toString ( o pj ) string {
 // toProj returns a proj-string representation of the struct
 // implementing a pj interface.
 // Empty string is returned on error.
+// `opts` can hold the following strings :
 //
-func toProj ( ctx *Context, o pj, styp StringType ) string {
-    cs := C.proj_as_proj_string((*ctx).pj, o.Handle().(*C.PJ), C.PJ_PROJ_STRING_TYPE(styp), nil)
+//   "USE_APPROX_TMERC=YES" to add the +approx flag to +proj=tmerc or +proj=utm
+//
+func toProj ( ctx *Context, o pj, styp StringType, opts []string ) string {
+    var copts **C.char
+    l := len(opts)
+    if l > 0 {
+        copts = C.makeStringArray(C.size_t(l+1))
+        for i, opt := range opts {
+            copt := C.CString(opt)
+            C.setStringArrayItem(copts, C.size_t(i), copt)
+        }
+        C.setStringArrayItem(copts, C.size_t(l), nil)
+    }
+    cs := C.proj_as_proj_string((*ctx).pj, o.Handle().(*C.PJ), C.PJ_PROJ_STRING_TYPE(styp), copts)
+    if l > 0 {
+        for i := 0 ; i < l ; i++ {
+            C.free(unsafe.Pointer(C.getStringArrayItem(copts, C.size_t(i))))
+        }
+        C.destroyStringArray(&copts)
+    }
     return C.GoString(cs)
 }
 

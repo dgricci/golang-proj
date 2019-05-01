@@ -143,8 +143,8 @@ func (pm *PrimeMeridian) String ( ) string {
 // ProjString returns a proj-string representation of the prime meridian.
 // Empty string is returned on error (sounds to be the case : no conversion).
 //
-func (pm *PrimeMeridian) ProjString ( ctx *Context, styp StringType ) string {
-    return toProj(ctx, pm, styp)
+func (pm *PrimeMeridian) ProjString ( ctx *Context, styp StringType, opts ...string ) string {
+    return toProj(ctx, pm, styp, nil)
 }
 
 // Wkt return returns a WKT representation of the prime meridian.
