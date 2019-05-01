@@ -6,7 +6,8 @@
 
 Revision:
 
-    * 2019/03/10 : first release
+    * 2019/03/10 : first draft
+    * 2019/05/01 : second release
 
 ---
 
@@ -56,4 +57,7 @@ If the PROJ library and the PROJ files are not installed in usual places
 `/usr/share/proj` for the latter), don't forget upon wrapper's installation to
 have the `LD_LIBRARY_PATH` set to point at the PROJ library and `PROJ_LIB` to
 the directory where `proj.db` is.
+
+Whilst `Makefile` is ready to work on other operating systems (like `windows`
+and `darwin`), one has to compile the PROJ on those systems :wink:
 
