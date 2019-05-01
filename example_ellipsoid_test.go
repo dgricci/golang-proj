@@ -28,6 +28,7 @@ func ExampleEllipsoid () {
         fmt.Printf("b  :%10.2f\n", b)
     }
     fmt.Printf("proj-string : %s\n", grs80.ProjString(c, Version4))
+    fmt.Printf("WKT : %s\n", grs80.Wkt(c, WKTv1GDAL, "MULTILINE=NO", "OUTPUT_AXIS=AUTO"))
 
     // Output:
     // id :
@@ -36,6 +37,8 @@ func ExampleEllipsoid () {
     // a  :6378137.00
     // rf :    298.26
     // proj-string : +ellps=GRS80
+    // WKT : SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]]
+
 
 }
 

@@ -24,7 +24,8 @@ func ExamplePrimeMeridian () {
     fmt.Printf("l :%10.2f\n", l)
     fmt.Printf("f :%10.2f\n", f)
     fmt.Printf("u :%s\n", u)
-    fmt.Printf("proj-string : %s\n", greenwhich.ProjString(c, Version4))
+    fmt.Printf("proj-string : '%s'\n", greenwhich.ProjString(c, Version4))
+    fmt.Printf("WKT : %s\n", greenwhich.Wkt(c, WKTv1GDAL, "MULTILINE=NO", "OUTPUT_AXIS=AUTO"))
 
     // Output:
     // id :
@@ -33,7 +34,8 @@ func ExamplePrimeMeridian () {
     // l :      0.00
     // f :      0.02
     // u :degree
-    // proj-string :
+    // proj-string : ''
+    // WKT : PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]]
 
 }
 

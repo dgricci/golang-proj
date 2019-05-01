@@ -85,6 +85,7 @@ func ExampleOperation_locatable () {
     fmt.Printf("inv:%t\n", lccI.HasInverse())
     fmt.Printf("acc:%e\n", lccI.Accuracy())
     fmt.Printf("proj-string : %s\n", lcc.ProjString(c, Version4))
+    fmt.Printf("WKT : %s\n", lcc.Wkt(c, WKTv2r2018, "MULTILINE=NO", "OUTPUT_AXIS=AUTO"))
 
     // switch to radians ...
     survey := XYQS{x:2.3488000*DegToRad, y:48.8534100*DegToRad, qualityLevel:1, surveyorName:[]byte("me")}
@@ -99,6 +100,7 @@ func ExampleOperation_locatable () {
     // inv:true
     // acc:-1.000000e+00
     // proj-string : +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m
+    // WKT : CONVERSION["PROJ-based coordinate operation",METHOD["PROJ-based operation method: +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m"]]
     // easting: 652.21664, northing: 6861.68261
 
 }
@@ -116,6 +118,7 @@ func ExampleOperation_locatablearray () {
     fmt.Printf("inv:%t\n", wgs84gI.HasInverse())
     fmt.Printf("acc:%e\n", wgs84gI.Accuracy())
     fmt.Printf("proj-string : %s\n", wgs84g.ProjString(c, Version5))
+    fmt.Printf("WKT : %s\n", wgs84g.Wkt(c, WKTv2r2018, "MULTILINE=NO", "OUTPUT_AXIS=AUTO"))
     wgs84g.DestroyReferenceSystem()
     epsg2154, _ := NewReferenceSystem(c, s2154)
     epsg2154I := epsg2154.Info()
@@ -125,6 +128,7 @@ func ExampleOperation_locatablearray () {
     fmt.Printf("inv:%t\n", epsg2154I.HasInverse())
     fmt.Printf("acc:%e\n", epsg2154I.Accuracy())
     fmt.Printf("proj-string : %s\n", epsg2154.ProjString(c, Version5))
+    fmt.Printf("WKT : %s\n", epsg2154.Wkt(c, WKTv2r2018, "MULTILINE=NO", "OUTPUT_AXIS=AUTO"))
     epsg2154.DestroyReferenceSystem()
     wgs84gToEpsg2154, _ := NewOperation(c, &Area{}, s4326, s2154)
     defer wgs84gToEpsg2154.DestroyOperation()
@@ -135,6 +139,7 @@ func ExampleOperation_locatablearray () {
     fmt.Printf("inv:%t\n", wgs84gToEpsg2154I.HasInverse())
     fmt.Printf("acc:%e\n", wgs84gToEpsg2154I.Accuracy())
     fmt.Printf("proj-string : %s\n", wgs84gToEpsg2154.ProjString(c, Version5))
+    fmt.Printf("WKT : %s\n", wgs84gToEpsg2154.Wkt(c, WKTv2r2018, "MULTILINE=YES", "INDENTATION_WIDTH=2", "OUTPUT_AXIS=AUTO"))
 
     var surveys [365]XYQS
     for r := 0 ; r < 365 ; r++ {
@@ -156,18 +161,155 @@ func ExampleOperation_locatablearray () {
     // inv:false
     // acc:-1.000000e+00
     // proj-string : +proj=longlat +datum=WGS84 +no_defs +type=crs
+    // WKT : GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]
     // id :
     // dsc:RGF93 / Lambert-93 (RGF93 / Lambert-93)
     // def:
     // inv:false
     // acc:-1.000000e+00
     // proj-string : +proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs +type=crs
+    // WKT : PROJCRS["RGF93 / Lambert-93",BASEGEOGCRS["RGF93",DATUM["Reseau Geodesique Francais 1993",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]]],CONVERSION["Lambert-93",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",46.5,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",3,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",49,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",44,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",700000,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",6600000,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting (X)",east,ORDER[1],LENGTHUNIT["metre",1]],AXIS["northing (Y)",north,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["France"],BBOX[41.15,-9.86,51.56,10.38]],ID["EPSG",2154]]
     // id :pipeline
     // dsc:Inverse of RGF93 to WGS 84 (1) + Lambert-93 (Inverse of RGF93 to WGS 84 (1) + Lambert-93)
     // def:proj=pipeline step proj=axisswap order=2,1 step proj=unitconvert xy_in=deg xy_out=rad step proj=lcc lat_0=46.5 lon_0=3 lat_1=49 lat_2=44 x_0=700000 y_0=6600000 ellps=GRS80
     // inv:true
     // acc:1.000000e+00
     // proj-string : +proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80
+    // WKT : CONCATENATEDOPERATION["Inverse of RGF93 to WGS 84 (1) + Lambert-93",
+    //   SOURCECRS[
+    //     GEOGCRS["WGS 84",
+    //       DATUM["World Geodetic System 1984",
+    //         ELLIPSOID["WGS 84",6378137,298.257223563,
+    //           LENGTHUNIT["metre",1]]],
+    //       PRIMEM["Greenwich",0,
+    //         ANGLEUNIT["degree",0.0174532925199433]],
+    //       CS[ellipsoidal,2],
+    //         AXIS["geodetic latitude (Lat)",north,
+    //           ORDER[1],
+    //           ANGLEUNIT["degree",0.0174532925199433]],
+    //         AXIS["geodetic longitude (Lon)",east,
+    //           ORDER[2],
+    //           ANGLEUNIT["degree",0.0174532925199433]],
+    //       USAGE[
+    //         SCOPE["unknown"],
+    //         AREA["World"],
+    //         BBOX[-90,-180,90,180]],
+    //       ID["EPSG",4326]]],
+    //   TARGETCRS[
+    //     PROJCRS["RGF93 / Lambert-93",
+    //       BASEGEOGCRS["RGF93",
+    //         DATUM["Reseau Geodesique Francais 1993",
+    //           ELLIPSOID["GRS 1980",6378137,298.257222101,
+    //             LENGTHUNIT["metre",1]]],
+    //         PRIMEM["Greenwich",0,
+    //           ANGLEUNIT["degree",0.0174532925199433]]],
+    //       CONVERSION["Lambert-93",
+    //         METHOD["Lambert Conic Conformal (2SP)",
+    //           ID["EPSG",9802]],
+    //         PARAMETER["Latitude of false origin",46.5,
+    //           ANGLEUNIT["degree",0.0174532925199433],
+    //           ID["EPSG",8821]],
+    //         PARAMETER["Longitude of false origin",3,
+    //           ANGLEUNIT["degree",0.0174532925199433],
+    //           ID["EPSG",8822]],
+    //         PARAMETER["Latitude of 1st standard parallel",49,
+    //           ANGLEUNIT["degree",0.0174532925199433],
+    //           ID["EPSG",8823]],
+    //         PARAMETER["Latitude of 2nd standard parallel",44,
+    //           ANGLEUNIT["degree",0.0174532925199433],
+    //           ID["EPSG",8824]],
+    //         PARAMETER["Easting at false origin",700000,
+    //           LENGTHUNIT["metre",1],
+    //           ID["EPSG",8826]],
+    //         PARAMETER["Northing at false origin",6600000,
+    //           LENGTHUNIT["metre",1],
+    //           ID["EPSG",8827]]],
+    //       CS[Cartesian,2],
+    //         AXIS["easting (X)",east,
+    //           ORDER[1],
+    //           LENGTHUNIT["metre",1]],
+    //         AXIS["northing (Y)",north,
+    //           ORDER[2],
+    //           LENGTHUNIT["metre",1]],
+    //       USAGE[
+    //         SCOPE["unknown"],
+    //         AREA["France"],
+    //         BBOX[41.15,-9.86,51.56,10.38]],
+    //       ID["EPSG",2154]]],
+    //   STEP[
+    //     COORDINATEOPERATION["Inverse of RGF93 to WGS 84 (1)",
+    //       SOURCECRS[
+    //         GEOGCRS["WGS 84",
+    //           DATUM["World Geodetic System 1984",
+    //             ELLIPSOID["WGS 84",6378137,298.257223563,
+    //               LENGTHUNIT["metre",1]]],
+    //           PRIMEM["Greenwich",0,
+    //             ANGLEUNIT["degree",0.0174532925199433]],
+    //           CS[ellipsoidal,2],
+    //             AXIS["geodetic latitude (Lat)",north,
+    //               ORDER[1],
+    //               ANGLEUNIT["degree",0.0174532925199433]],
+    //             AXIS["geodetic longitude (Lon)",east,
+    //               ORDER[2],
+    //               ANGLEUNIT["degree",0.0174532925199433]]]],
+    //       TARGETCRS[
+    //         GEOGCRS["RGF93",
+    //           DATUM["Reseau Geodesique Francais 1993",
+    //             ELLIPSOID["GRS 1980",6378137,298.257222101,
+    //               LENGTHUNIT["metre",1]]],
+    //           PRIMEM["Greenwich",0,
+    //             ANGLEUNIT["degree",0.0174532925199433]],
+    //           CS[ellipsoidal,2],
+    //             AXIS["geodetic latitude (Lat)",north,
+    //               ORDER[1],
+    //               ANGLEUNIT["degree",0.0174532925199433]],
+    //             AXIS["geodetic longitude (Lon)",east,
+    //               ORDER[2],
+    //               ANGLEUNIT["degree",0.0174532925199433]]]],
+    //       METHOD["Geocentric translations (geog2D domain)",
+    //         ID["EPSG",9603]],
+    //       PARAMETER["X-axis translation",0,
+    //         LENGTHUNIT["metre",1],
+    //         ID["EPSG",8605]],
+    //       PARAMETER["Y-axis translation",0,
+    //         LENGTHUNIT["metre",1],
+    //         ID["EPSG",8606]],
+    //       PARAMETER["Z-axis translation",0,
+    //         LENGTHUNIT["metre",1],
+    //         ID["EPSG",8607]],
+    //       OPERATIONACCURACY[1.0],
+    //       USAGE[
+    //         SCOPE["unknown"],
+    //         AREA["France"],
+    //         BBOX[41.15,-9.86,51.56,10.38]],
+    //       ID["INVERSE(EPSG)",1671]]],
+    //   STEP[
+    //     CONVERSION["Lambert-93",
+    //       METHOD["Lambert Conic Conformal (2SP)",
+    //         ID["EPSG",9802]],
+    //       PARAMETER["Latitude of false origin",46.5,
+    //         ANGLEUNIT["degree",0.0174532925199433],
+    //         ID["EPSG",8821]],
+    //       PARAMETER["Longitude of false origin",3,
+    //         ANGLEUNIT["degree",0.0174532925199433],
+    //         ID["EPSG",8822]],
+    //       PARAMETER["Latitude of 1st standard parallel",49,
+    //         ANGLEUNIT["degree",0.0174532925199433],
+    //         ID["EPSG",8823]],
+    //       PARAMETER["Latitude of 2nd standard parallel",44,
+    //         ANGLEUNIT["degree",0.0174532925199433],
+    //         ID["EPSG",8824]],
+    //       PARAMETER["Easting at false origin",700000,
+    //         LENGTHUNIT["metre",1],
+    //         ID["EPSG",8826]],
+    //       PARAMETER["Northing at false origin",6600000,
+    //         LENGTHUNIT["metre",1],
+    //         ID["EPSG",8827]],
+    //       ID["EPSG",18085]]],
+    //   USAGE[
+    //     SCOPE["unknown"],
+    //     AREA["France"],
+    //     BBOX[41.15,-9.86,51.56,10.38]]]
     // easting: 652.21664, northing: 6861.68261
     // easting: 652.21664, northing: 6861.68261
 
