@@ -14,7 +14,7 @@ func ExampleUnit () {
         return
     }
     fmt.Printf("id=%s\n", km.ID())
-    fmt.Printf("tom=%s\n", km.ToMeterString())
+    fmt.Printf("tom=%s\n", km) // in fact km.String()
     fmt.Printf("scl=%20.15f\n", km.ToMeter())
     fmt.Printf("name=%s\n", km.Name())
 

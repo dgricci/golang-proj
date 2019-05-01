@@ -33,10 +33,10 @@ func (u *Unit) ID () string {
     return C.GoString((*u).pj.id)
 }
 
-// ToMeterString returns a text representation of the factor that converts a given
+// String returns a text representation of the factor that converts a given
 // unit to meters.
 //
-func (u *Unit) ToMeterString () string {
+func (u *Unit) String () string {
     return C.GoString((*u).pj.to_meter)
 }
 
