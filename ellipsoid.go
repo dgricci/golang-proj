@@ -137,3 +137,9 @@ func (ell *Ellipsoid) Info ( ) ( *ISOInfo ) {
     return &ISOInfo{pj:C.proj_pj_info((*ell).pj)}
 }
 
+// String returns a string representation of the ellipsoid.
+//
+func (ell *Ellipsoid) String ( ) string {
+    return ell.Info().Description()
+}
+

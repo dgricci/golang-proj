@@ -223,3 +223,9 @@ func (op *Operation) Info ( ) ( *ISOInfo ) {
     return &ISOInfo{pj:C.proj_pj_info((*op).pj)}
 }
 
+// String returns a string representation of the operation.
+//
+func (op *Operation) String ( ) string {
+    return op.Info().Description()
+}
+

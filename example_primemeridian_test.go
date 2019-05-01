@@ -15,7 +15,7 @@ func ExamplePrimeMeridian () {
     }
     greenwhichI := greenwhich.Info()
     fmt.Printf("id :%s\n", greenwhichI.ID())
-    fmt.Printf("dsc:%s\n", greenwhichI.Description())
+    fmt.Printf("dsc:%s (%s)\n", greenwhichI.Description(), greenwhich)
     fmt.Printf("def:%s\n", greenwhichI.Definition())
     l, f, u, e := greenwhich.Parameters(c)
     if e != nil {
@@ -26,7 +26,7 @@ func ExamplePrimeMeridian () {
     fmt.Printf("u :%s\n", u)
     // Output:
     // id :
-    // dsc:Greenwich
+    // dsc:Greenwich (Greenwich)
     // def:
     // l :      0.00
     // f :      0.02

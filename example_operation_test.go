@@ -80,7 +80,7 @@ func ExampleOperation_locatable () {
     defer lcc.DestroyOperation()
     lccI := lcc.Info()
     fmt.Printf("id :%s\n", lccI.ID())
-    fmt.Printf("dsc:%s\n", lccI.Description())
+    fmt.Printf("dsc:%s (%s)\n", lccI.Description(), lcc)
     fmt.Printf("def:%s\n", lccI.Definition())
     fmt.Printf("inv:%t\n", lccI.HasInverse())
     fmt.Printf("acc:%e\n", lccI.Accuracy())
@@ -93,7 +93,7 @@ func ExampleOperation_locatable () {
 
     // Output:
     // id :lcc
-    // dsc:PROJ-based coordinate operation
+    // dsc:PROJ-based coordinate operation (PROJ-based coordinate operation)
     // def:proj=lcc lat_1=49 lat_2=44 lat_0=46.5 lon_0=3 x_0=700000 y_0=6600000 ellps=GRS80 towgs84=0,0,0,0,0,0,0 units=m
     // inv:true
     // acc:-1.000000e+00
@@ -108,7 +108,7 @@ func ExampleOperation_locatablearray () {
     wgs84g, _ := NewReferenceSystem(c, s4326)
     wgs84gI := wgs84g.Info()
     fmt.Printf("id :%s\n", wgs84gI.ID())
-    fmt.Printf("dsc:%s\n", wgs84gI.Description())
+    fmt.Printf("dsc:%s (%s)\n", wgs84gI.Description(), wgs84g)
     fmt.Printf("def:%s\n", wgs84gI.Definition())
     fmt.Printf("inv:%t\n", wgs84gI.HasInverse())
     fmt.Printf("acc:%e\n", wgs84gI.Accuracy())
@@ -116,7 +116,7 @@ func ExampleOperation_locatablearray () {
     epsg2154, _ := NewReferenceSystem(c, s2154)
     epsg2154I := epsg2154.Info()
     fmt.Printf("id :%s\n", epsg2154I.ID())
-    fmt.Printf("dsc:%s\n", epsg2154I.Description())
+    fmt.Printf("dsc:%s (%s)\n", epsg2154I.Description(), epsg2154)
     fmt.Printf("def:%s\n", epsg2154I.Definition())
     fmt.Printf("inv:%t\n", epsg2154I.HasInverse())
     fmt.Printf("acc:%e\n", epsg2154I.Accuracy())
@@ -125,7 +125,7 @@ func ExampleOperation_locatablearray () {
     defer wgs84gToEpsg2154.DestroyOperation()
     wgs84gToEpsg2154I := wgs84gToEpsg2154.Info()
     fmt.Printf("id :%s\n", wgs84gToEpsg2154I.ID())
-    fmt.Printf("dsc:%s\n", wgs84gToEpsg2154I.Description())
+    fmt.Printf("dsc:%s (%s)\n", wgs84gToEpsg2154I.Description(), wgs84gToEpsg2154)
     fmt.Printf("def:%s\n", wgs84gToEpsg2154I.Definition())
     fmt.Printf("inv:%t\n", wgs84gToEpsg2154I.HasInverse())
     fmt.Printf("acc:%e\n", wgs84gToEpsg2154I.Accuracy())
@@ -145,17 +145,17 @@ func ExampleOperation_locatablearray () {
 
     // Output:
     // id :
-    // dsc:WGS 84
+    // dsc:WGS 84 (WGS 84)
     // def:
     // inv:false
     // acc:-1.000000e+00
     // id :
-    // dsc:RGF93 / Lambert-93
+    // dsc:RGF93 / Lambert-93 (RGF93 / Lambert-93)
     // def:
     // inv:false
     // acc:-1.000000e+00
     // id :pipeline
-    // dsc:Inverse of RGF93 to WGS 84 (1) + Lambert-93
+    // dsc:Inverse of RGF93 to WGS 84 (1) + Lambert-93 (Inverse of RGF93 to WGS 84 (1) + Lambert-93)
     // def:proj=pipeline step proj=axisswap order=2,1 step proj=unitconvert xy_in=deg xy_out=rad step proj=lcc lat_0=46.5 lon_0=3 lat_1=49 lat_2=44 x_0=700000 y_0=6600000 ellps=GRS80
     // inv:true
     // acc:1.000000e+00

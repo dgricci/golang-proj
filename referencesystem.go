@@ -263,3 +263,9 @@ func (crs *ReferenceSystem) Info ( ) ( *ISOInfo ) {
     return &ISOInfo{pj:C.proj_pj_info((*crs).pj)}
 }
 
+// String returns a string representation of the reference system.
+//
+func (crs *ReferenceSystem) String ( ) string {
+    return crs.Info().Description()
+}
+

@@ -128,9 +128,15 @@ func (pm *PrimeMeridian) Parameters ( ctx *Context ) ( longitude float64, toRad 
     return
 }
 
-// Info returns information about a specific ellipsoid object.
+// Info returns information about a specific prime meridien object.
 //
 func (pm *PrimeMeridian) Info ( ) ( *ISOInfo ) {
     return &ISOInfo{pj:C.proj_pj_info((*pm).pj)}
+}
+
+// String returns a string representation of the prime meridien.
+//
+func (pm *PrimeMeridian) String ( ) string {
+    return pm.Info().Description()
 }
 
