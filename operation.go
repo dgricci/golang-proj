@@ -226,21 +226,21 @@ func (op *Operation) Info ( ) ( *ISOInfo ) {
 // String returns a string representation of the operation.
 //
 func (op *Operation) String ( ) string {
-    return op.Info().Description()
+    return toString(op)
 }
 
 // ProjString returns a proj-string representation of the operation.
 // Empty string is returned on error.
 //
 func (op *Operation) ProjString ( ctx *Context, styp StringType ) string {
-    return C.GoString(C.proj_as_proj_string((*ctx).pj, (*op).pj, C.PJ_PROJ_STRING_TYPE(styp), nil))
+    return toProj(ctx, op, styp)
 }
 
-// Wkt return returns a WKT representation of the operation.
+// Wkt returns a WKT representation of the operation.
 // Empty string is returned on error.
 // Operation can only be exported to WKT2:2018 (WKTv2r2018 or
 // WKTv2r2018Simplified for `styp`).
-// `opts` can be :
+// `opts` can be hold the following strings :
 //
 //   "MULTILINE=YES" Defaults to YES, except for styp equals WKT1_ESRI
 //
@@ -252,23 +252,11 @@ func (op *Operation) ProjString ( ctx *Context, styp StringType ) string {
 //   them unconditionally, and to NO will omit them unconditionally.
 //
 func (op *Operation) Wkt ( ctx *Context, styp WKTType, opts ...string ) string {
-    var copts **C.char
-    l := len(opts)
-    if l > 0 {
-        copts = C.makeStringArray(C.size_t(l+1))
-        for i, opt := range opts {
-            copt := C.CString(opt)
-            C.setStringArrayItem(copts, C.size_t(i), copt)
-        }
-        C.setStringArrayItem(copts, C.size_t(l), nil)
+    switch styp {
+    case WKTv2r2018, WKTv2r2018Simplified :
+        return toWkt(ctx, op, styp, opts)
+    default :
+        return ""
     }
-    cs := C.proj_as_wkt((*ctx).pj, (*op).pj, C.PJ_WKT_TYPE(styp), copts)
-    if l > 0 {
-        for i := 0 ; i < l ; i++ {
-            C.free(unsafe.Pointer(C.getStringArrayItem(copts, C.size_t(i))))
-        }
-        C.destroyStringArray(&copts)
-    }
-    return C.GoString(cs)
 }
 

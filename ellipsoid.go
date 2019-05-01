@@ -140,19 +140,19 @@ func (ell *Ellipsoid) Info ( ) ( *ISOInfo ) {
 // String returns a string representation of the ellipsoid.
 //
 func (ell *Ellipsoid) String ( ) string {
-    return ell.Info().Description()
+    return toString(ell)
 }
 
 // ProjString returns a proj-string representation of the ellipsoid.
 // Empty string is returned on error.
 //
 func (ell *Ellipsoid) ProjString ( ctx *Context, styp StringType ) string {
-    return C.GoString(C.proj_as_proj_string((*ctx).pj, (*ell).pj, C.PJ_PROJ_STRING_TYPE(styp), nil))
+    return toProj(ctx, ell, styp)
 }
 
-// Wkt return returns a WKT representation of the ellipsoid.
+// Wkt returns a WKT representation of the ellipsoid.
 // Empty string is returned on error.
-// `opts` can be :
+// `opts` can be hold the following strings :
 //
 //   "MULTILINE=YES" Defaults to YES, except for styp equals WKT1_ESRI
 //
@@ -164,23 +164,6 @@ func (ell *Ellipsoid) ProjString ( ctx *Context, styp StringType ) string {
 //   them unconditionally, and to NO will omit them unconditionally.
 //
 func (ell *Ellipsoid) Wkt ( ctx *Context, styp WKTType, opts ...string ) string {
-    var copts **C.char
-    l := len(opts)
-    if l > 0 {
-        copts = C.makeStringArray(C.size_t(l+1))
-        for i, opt := range opts {
-            copt := C.CString(opt)
-            C.setStringArrayItem(copts, C.size_t(i), copt)
-        }
-        C.setStringArrayItem(copts, C.size_t(l), nil)
-    }
-    cs := C.proj_as_wkt((*ctx).pj, (*ell).pj, C.PJ_WKT_TYPE(styp), copts)
-    if l > 0 {
-        for i := 0 ; i < l ; i++ {
-            C.free(unsafe.Pointer(C.getStringArrayItem(copts, C.size_t(i))))
-        }
-        C.destroyStringArray(&copts)
-    }
-    return C.GoString(cs)
+    return toWkt(ctx, ell, styp, opts)
 }
 
