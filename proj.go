@@ -25,8 +25,8 @@ var (
 // Internal use only.
 //
 type handle interface {
-    Handle() interface{}    // return handle to the underlaying PROJ pointer
-    HandleIsNil() bool      // return true if the underlying PROJ pointer is nil
+    Handle()        interface{} // return handle to the underlaying PROJ pointer
+    HandleIsNil()   bool        // return true if the underlying PROJ pointer is nil
 }
 
 // pj exposes handle methods as well as Info() to get metadata on the
@@ -36,7 +36,10 @@ type handle interface {
 //
 type pj interface {
     handle
-    Info() *ISOInfo         // return information about a specific object
+    TypeOf()                                                    ISOType     // return the ISOType of a specific object
+    Info()                                                      *ISOInfo    // return information about a specific object
+    ProjString( ctx *Context, styp StringType, opts ...string ) string      // return PROJ representation of a specific object
+    Wkt( ctx *Context, styp WKTType, opts ...string )           string      // return WKT representation of a specific object
 }
 
 // toString returns a string representation of the struct implementing a pj
