@@ -10,9 +10,6 @@ import (
 // TestWorldArea checks creating a world area !
 func TestWorldArea ( t *testing.T ) {
     w := NewArea(-180,-90,180,90)
-    if Type(w) != TypeUnknown {
-        t.Errorf("Expected TypeUnknown for Area")
-    }
     w.DestroyArea()
     if reflect.ValueOf(w.Handle()).Elem() != reflect.Zero(reflect.TypeOf(w.Handle())).Elem() {
         t.Errorf("Failed to deallocate the newly created world area")

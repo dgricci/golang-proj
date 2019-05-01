@@ -79,6 +79,13 @@ func (ell *Ellipsoid)  HandleIsNil () bool {
     return (*ell).pj == (*C.PJ)(nil)
 }
 
+// TypeOf returns the ISOType of an ellipsoid (EllipsoidType).
+// UnKnownType on error.
+//
+func (ell *Ellipsoid) TypeOf ( ) ISOType {
+    return hasType(ell)
+}
+
 // SemiMajor returns the semi-major axis in meter of the given ellipsoid.
 //
 func (ell *Ellipsoid) SemiMajor ( ctx *Context ) ( a float64, e error ) {

@@ -104,6 +104,16 @@ func (crs *ReferenceSystem) HandleIsNil () bool {
     return (*crs).pj == (*C.PJ)(nil)
 }
 
+// TypeOf returns the ISOType of a reference system (GeodeticCRS,
+// GeocentricCRS, GeographicCRS, Geographic2DCRS, Geographic3DCRS,
+// VerticalCRS, ProjectedCRS, CompoundCRS, TemporalCRS, EngineeringCRS,
+// BoundCRS, OtherCRS).
+// UnKnownType on error.
+//
+func (crs *ReferenceSystem) TypeOf ( ) ISOType {
+    return hasType(crs)
+}
+
 // OperationFilter allows setting different parameter when searching
 // operations in `NewOperation`
 //

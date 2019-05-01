@@ -131,14 +131,14 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
         return
     }
     op = &Operation{pj:pj}
-    switch Type(op) {
+    switch op.TypeOf() {
     case Conversion,
          Transformation,
          ConcatenatedOperation,
          OtherCoordinateOperation :
         return
     default :
-        e = fmt.Errorf("%v does not yield an Operation (%v)", def, Type(op))
+        e = fmt.Errorf("%v does not yield an Operation (%v)", def, op.TypeOf())
         op.DestroyOperation()
         op = nil
     }
@@ -166,6 +166,14 @@ func (op *Operation) Handle () (interface{}) {
 //
 func (op *Operation) HandleIsNil () bool {
     return (*op).pj == (*C.PJ)(nil)
+}
+
+// TypeOf returns the ISOType of an operation (Conversion, Transformation,
+// ConcatenatedOperation, OtherCoordinateOperation).
+// UnKnownType on error.
+//
+func (op *Operation) TypeOf ( ) ISOType {
+    return hasType(op)
 }
 
 func (op *Operation) fwdinv ( d Direction, aC *Coordinate ) ( aR *Coordinate, e error ) {

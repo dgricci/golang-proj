@@ -46,6 +46,12 @@ func toString ( o pj ) string {
     return o.Info().Description()
 }
 
+// hasType returns the ISOType of the struct implementing a pj interface.
+//
+func hasType  ( o pj ) ISOType {
+    return ISOType(C.proj_get_type( o.Handle().(*C.PJ) ))
+}
+
 // toProj returns a proj-string representation of the struct
 // implementing a pj interface.
 // Empty string is returned on error.

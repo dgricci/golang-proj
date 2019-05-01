@@ -34,7 +34,7 @@ func TestOperation ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(o) != Transformation {
+    if o.TypeOf() != Transformation {
         t.Errorf("Expected Transformation ...")
     }
     o.DestroyOperation()
@@ -141,7 +141,7 @@ func TestOperation_conversion ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(o) != Conversion {
+    if o.TypeOf() != Conversion {
         t.Errorf("Expected Conversion ...")
     }
     o.DestroyOperation()
@@ -152,7 +152,7 @@ func TestOperation_concatenatedoperation ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(o) != ConcatenatedOperation {
+    if o.TypeOf() != ConcatenatedOperation {
         t.Errorf("Expected ConcatenatedOperation ...")
     }
     o.DestroyOperation()
@@ -163,7 +163,7 @@ func TestOperation_othercoordinateoperation ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(o) != OtherCoordinateOperation {
+    if o.TypeOf() != OtherCoordinateOperation {
         t.Errorf("Expected OtherCoordinateOperation ...")
     }
     o.DestroyOperation()

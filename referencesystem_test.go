@@ -38,7 +38,7 @@ func TestCrs ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(p) != Geographic2DCRS {
+    if p.TypeOf() != Geographic2DCRS {
         t.Errorf("Expected Geographic2DCRS")
     }
     p.DestroyReferenceSystem()

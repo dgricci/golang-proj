@@ -19,7 +19,7 @@ func TestPrimeMeridian ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(pm) != PrimeMeridianType {
+    if pm.TypeOf() != PrimeMeridianType {
         t.Errorf("Expected PrimeMeridianType")
     }
     _, e = pm.Longitude(ctx)
@@ -52,7 +52,7 @@ func TestPrimeMeridianWKT ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(pm) != PrimeMeridianType {
+    if pm.TypeOf() != PrimeMeridianType {
         t.Errorf("Expected PrimeMeridianType")
     }
     _, e = pm.Longitude(c)

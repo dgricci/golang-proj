@@ -77,6 +77,13 @@ func (pm *PrimeMeridian) HandleIsNil () bool {
     return (*pm).pj == (*C.PJ)(nil)
 }
 
+// TypeOf returns the ISOType of a prime meridian (PrimeMeridianType).
+// UnKnownType on error.
+//
+func (pm *PrimeMeridian) TypeOf ( ) ISOType {
+    return hasType(pm)
+}
+
 // Longitude returns the longitude of the prime meridian.
 //
 func (pm *PrimeMeridian) Longitude ( ctx *Context ) ( longitude float64, e error ) {

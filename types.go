@@ -246,6 +246,8 @@ const (
     TemporalMeasureCs CoordinateSystemType = C.PJ_CS_TYPE_TEMPORALMEASURE
 )
 
+/*
+ * replaced by TypeOf()
 // Type returns the type of a `*ReferenceSystem`, `*Operation`, `Ellipsoid`,
 // `PrimeMeridian` object.
 //
@@ -263,3 +265,4 @@ func Type ( iso interface{} ) ISOType {
         return TypeUnknown
     }
 }
+ */

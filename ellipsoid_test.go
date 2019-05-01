@@ -18,7 +18,7 @@ func TestEllipsoid ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(ell) != EllipsoidType {
+    if ell.TypeOf() != EllipsoidType {
         t.Errorf("Expected EllipsoidType")
     }
     _, e = ell.SemiMajor(ctx)
@@ -49,7 +49,7 @@ func TestEllipsoidWKT ( t *testing.T ) {
     if e != nil {
         t.Error(e)
     }
-    if Type(ell) != EllipsoidType {
+    if ell.TypeOf() != EllipsoidType {
         t.Errorf("Expected EllipsoidType")
     }
     _, e = ell.SemiMajor(c)
