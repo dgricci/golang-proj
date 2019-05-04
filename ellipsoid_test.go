@@ -54,6 +54,7 @@ func TestEllipsoid ( t *testing.T ) {
 
 func TestEllipsoidWKT ( t *testing.T ) {
     c := NewContext()
+    defer c.DestroyContext()
     s := `SPHEROID["WGS 84",6378137,298.257223563,"unused"]`
     ell, e := NewEllipsoid(c, s)
     if e == nil {
