@@ -9,7 +9,6 @@ import "C"
 
 import (
     "unsafe"
-    "strings"
     "fmt"
 )
 
@@ -53,39 +52,8 @@ func NewReferenceSystem ( ctx *Context, def ...string ) (crs *ReferenceSystem, e
         e = fmt.Errorf(C.GoString(C.proj_errno_string(-1)))
         return
     case 1 :
-        cdef := C.CString(def[0])
-        defer C.free(unsafe.Pointer(cdef))
-        switch dialect := C.proj_context_guess_wkt_dialect((*ctx).pj, cdef) ; GuessedWKTDialect(dialect) {
-        case GuessedWKTUnknown  : // URI
-            ac := strings.Split(def[0],":")
-            switch len(ac) {
-            case 2 :
-                cauth := C.CString(ac[0])
-                defer C.free(unsafe.Pointer(cauth))
-                cname := C.CString(ac[1])
-                defer C.free(unsafe.Pointer(cname))
-                pj = C.proj_create_from_database((*ctx).pj, cauth, cname, C.PJ_CATEGORY_CRS, 0, nil)
-            case 7 : // urn:ogc:def:meridian::EPSG:code
-                fallthrough
-            default:
-                pj = C.proj_create((*ctx).pj, cdef)
-            }
-        default    :
-            var ce C.PROJ_STRING_LIST
-            pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
-            if pj == (*C.PJ)(nil) {
-                if ce != (C.PROJ_STRING_LIST)(nil) {
-                    cm := C.listcat(ce)
-                    defer C.free(unsafe.Pointer(cm))
-                    defer C.proj_string_list_destroy(ce)
-                    e = fmt.Errorf(C.GoString(cm))
-                    //return
-                }
-                // not needed :
-                //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-                return
-            }
-        }
+        pj, e = NewPJ(ctx, def[0], "CRS", C.PJ_CATEGORY_CRS)
+        if e != nil { return }
     default:
         defs := C.makeStringArray(C.size_t(l))
         for i, partdef := range def {
@@ -97,10 +65,10 @@ func NewReferenceSystem ( ctx *Context, def ...string ) (crs *ReferenceSystem, e
             C.free(unsafe.Pointer(C.getStringArrayItem(defs,C.size_t(i))))
         }
         C.destroyStringArray(&defs)
-    }
-    if pj == (*C.PJ)(nil) {
-        e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-        return
+        if pj == (*C.PJ)(nil) {
+            e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+            return
+        }
     }
     if C.proj_is_crs(pj) == C.int(0) {
         C.proj_destroy(pj)

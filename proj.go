@@ -12,7 +12,11 @@ package proj
  */
 import "C"
 
-import "unsafe"
+import (
+    "unsafe"
+    "strings"
+    "fmt"
+)
 
 var (
     // global information (private)
@@ -40,6 +44,56 @@ type pj interface {
     Info()                                                      *ISOInfo    // return information about a specific object
     ProjString( ctx *Context, styp StringType, opts ...string ) string      // return PROJ representation of a specific object
     Wkt( ctx *Context, styp WKTType, opts ...string )           string      // return WKT representation of a specific object
+}
+
+// NewPJ creates the PROJ pointer
+//
+func NewPJ (ctx *Context, def string, styp string, ctyp C.PJ_CATEGORY ) ( pj *C.PJ, e error) {
+    cdef := C.CString(def)
+    defer C.free(unsafe.Pointer(cdef))
+    switch dialect := C.proj_context_guess_wkt_dialect((*ctx).pj, cdef) ; GuessedWKTDialect(dialect) {
+    case GuessedWKTUnknown  : // URI
+        ac := strings.Split(def,":")
+        switch len(ac) {
+        case 7 : // urn:ogc:def:<type>::<auth>:<code>
+            pj = C.proj_create((*ctx).pj, cdef)
+        case 2 : // <auth>:<code>
+            cauth := C.CString(ac[0])
+            defer C.free(unsafe.Pointer(cauth))
+            cname := C.CString(ac[1])
+            defer C.free(unsafe.Pointer(cname))
+            pj = C.proj_create_from_database((*ctx).pj, cauth, cname, ctyp, 0, nil)
+        default:
+            switch ctyp {
+            case C.PJ_CATEGORY_CRS, C.PJ_CATEGORY_COORDINATE_OPERATION :
+                // proj-string
+                pj = C.proj_create((*ctx).pj, cdef)
+            default :
+                e = fmt.Errorf("%v does not yield an %s", def, styp)
+                return
+            }
+        }
+    default                 : // WKT flavor (wkt2_grammar.y : prime_meridian is missing from input !)
+        var ce C.PROJ_STRING_LIST
+        pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
+        if pj == (*C.PJ)(nil) {
+            if ce != (C.PROJ_STRING_LIST)(nil) {
+                cm := C.listcat(ce)
+                defer C.free(unsafe.Pointer(cm))
+                defer C.proj_string_list_destroy(ce)
+                e = fmt.Errorf(C.GoString(cm))
+                //return
+            }
+            // not needed :
+            //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+            return
+        }
+    }
+    if pj == (*C.PJ)(nil) {
+        e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+        return
+    }
+    return
 }
 
 // toString returns a string representation of the struct implementing a pj

@@ -9,7 +9,6 @@ import "C"
 
 import (
     "unsafe"
-    "strings"
     "fmt"
 )
 
@@ -46,85 +45,50 @@ type Operation struct {
 func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e error) {
     var pj *C.PJ
     l := len(def)
-    if l == 0 {
+    switch {
+    case l==0 :
         e = fmt.Errorf(C.GoString(C.proj_errno_string(-1)))
         return
-    }
-    dialect := GuessedWKTUnknown
-    cdef := C.CString(def[0])
-    defer C.free(unsafe.Pointer(cdef))
-    if l == 1 {
-        dialect = GuessedWKTDialect(C.proj_context_guess_wkt_dialect((*ctx).pj, cdef))
-    }
-    switch dialect {
-    case GuessedWKTUnknown  :
-        switch {
-        case l==1 :
-            ac := strings.Split(def[0],":")
-            if len(ac) == 2 {// <AUTH>:<CODE>
-                cauth := C.CString(ac[0])
-                defer C.free(unsafe.Pointer(cauth))
-                cname := C.CString(ac[1])
-                defer C.free(unsafe.Pointer(cname))
-                pj = C.proj_create_from_database((*ctx).pj, cauth, cname, C.PJ_CATEGORY_COORDINATE_OPERATION, 0, nil)
-            } else {
-                d := C.CString(def[0])
-                defer C.free(unsafe.Pointer(d))
-                pj = C.proj_create((*ctx).pj, d)
-            }
-        case l==2 && bbox != nil :// src and tgt CRSs
-            // proj_create_crs_to_crs() is a high level function over
-            // proj_create_operations() : it can then returns several operations (Cf. projinfo -s  -o PROJ -s IGNF:NTFLAMB2E.NGF84 -t IGNF:ETRS89LCC.EVRF2000)
-            src, se := NewReferenceSystem(ctx, def[0])
-            if se != nil { e = se ; return }
-            defer src.DestroyReferenceSystem()
-            tgt, te := NewReferenceSystem(ctx, def[1])
-            if te != nil { e = te ; return }
-            defer tgt.DestroyReferenceSystem()
-            opeFactory := C.proj_create_operation_factory_context((*ctx).pj, nil)
-            if opeFactory == (*C.PJ_OPERATION_FACTORY_CONTEXT)(nil) {
-                e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-                return
-            }
-            defer C.proj_operation_factory_context_destroy(opeFactory)
-            candidateOps := C.proj_create_operations((*ctx).pj, (*src).pj, (*tgt).pj, opeFactory)
-            if candidateOps == (*C.PJ_OBJ_LIST)(nil) {
-                e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-                return
-            }
-            defer C.proj_list_destroy(candidateOps)
-            if C.proj_list_get_count(candidateOps) == 0 {
-                e = fmt.Errorf("No operation found between '%s' and '%s'", def[0], def[1])
-                return
-            }
-            pj = C.proj_list_get((*ctx).pj, candidateOps, C.int(0))
-        default :
-            defs := C.makeStringArray(C.size_t(l))
-            for i, partdef := range def {
-                partd := C.CString(partdef)
-                C.setStringArrayItem(defs, C.size_t(i), partd)
-            }
-            pj = C.proj_create_argv((*ctx).pj, C.int(l), defs)
-            for i := 0 ; i < l ; i++ {
-                C.free(unsafe.Pointer(C.getStringArrayItem(defs,C.size_t(i))))
-            }
-            C.destroyStringArray(&defs)
-        }
-    default:// WKT
-        var ce C.PROJ_STRING_LIST
-        pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
-        if pj == (*C.PJ)(nil) {
-            if ce != (C.PROJ_STRING_LIST)(nil) {// FIXME : PROJ 6.1.0 should return an error with proj_context_errno
-                cm := C.listcat(ce)
-                defer C.free(unsafe.Pointer(cm))
-                defer C.proj_string_list_destroy(ce)
-                e = fmt.Errorf(C.GoString(cm))
-                //return
-            }
-            // not needed :
-            //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+    case l==1 :
+        pj, e = NewPJ(ctx, def[0], "Operation", C.PJ_CATEGORY_COORDINATE_OPERATION)
+        if e != nil { return }
+    case l==2 && bbox != nil :// src and tgt CRSs
+        // proj_create_crs_to_crs() is a high level function over
+        // proj_create_operations() : it can then returns several operations (Cf. projinfo -s  -o PROJ -s IGNF:NTFLAMB2E.NGF84 -t IGNF:ETRS89LCC.EVRF2000)
+        src, se := NewReferenceSystem(ctx, def[0])
+        if se != nil { e = se ; return }
+        defer src.DestroyReferenceSystem()
+        tgt, te := NewReferenceSystem(ctx, def[1])
+        if te != nil { e = te ; return }
+        defer tgt.DestroyReferenceSystem()
+        opeFactory := C.proj_create_operation_factory_context((*ctx).pj, nil)
+        if opeFactory == (*C.PJ_OPERATION_FACTORY_CONTEXT)(nil) {
+            e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
             return
         }
+        defer C.proj_operation_factory_context_destroy(opeFactory)
+        candidateOps := C.proj_create_operations((*ctx).pj, (*src).pj, (*tgt).pj, opeFactory)
+        if candidateOps == (*C.PJ_OBJ_LIST)(nil) {
+            e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+            return
+        }
+        defer C.proj_list_destroy(candidateOps)
+        if C.proj_list_get_count(candidateOps) == 0 {
+            e = fmt.Errorf("No operation found between '%s' and '%s'", def[0], def[1])
+            return
+        }
+        pj = C.proj_list_get((*ctx).pj, candidateOps, C.int(0))
+    default :
+        defs := C.makeStringArray(C.size_t(l))
+        for i, partdef := range def {
+            partd := C.CString(partdef)
+            C.setStringArrayItem(defs, C.size_t(i), partd)
+        }
+        pj = C.proj_create_argv((*ctx).pj, C.int(l), defs)
+        for i := 0 ; i < l ; i++ {
+            C.free(unsafe.Pointer(C.getStringArrayItem(defs,C.size_t(i))))
+        }
+        C.destroyStringArray(&defs)
     }
     if pj == (*C.PJ)(nil) {
         e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
@@ -138,7 +102,7 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
          OtherCoordinateOperation :
         return
     default :
-        e = fmt.Errorf("%v does not yield an Operation (%v)", def, op.TypeOf())
+        e = fmt.Errorf("%v does not yield an Operation", def)
         op.DestroyOperation()
         op = nil
     }

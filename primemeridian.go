@@ -8,8 +8,6 @@ package proj
 import "C"
 
 import (
-    "unsafe"
-    "strings"
     "fmt"
 )
 
@@ -23,51 +21,16 @@ type PrimeMeridian struct {
 //
 func NewPrimeMeridian (ctx *Context, def string ) ( pm *PrimeMeridian, e error ) {
     var pj *C.PJ
-    cdef := C.CString(def)
-    defer C.free(unsafe.Pointer(cdef))
-    switch dialect := C.proj_context_guess_wkt_dialect((*ctx).pj, cdef) ; GuessedWKTDialect(dialect) {
-    case GuessedWKTUnknown  : // URI
-        ac := strings.Split(def,":")
-        switch len(ac) {
-        case 7 : // urn:ogc:def:meridian::EPSG:code
-            pj = C.proj_create((*ctx).pj, cdef)
-        case 2 :
-            cauth := C.CString(ac[0])
-            defer C.free(unsafe.Pointer(cauth))
-            cname := C.CString(ac[1])
-            defer C.free(unsafe.Pointer(cname))
-            pj = C.proj_create_from_database((*ctx).pj, cauth, cname, C.PJ_CATEGORY_PRIME_MERIDIAN, 0, nil)
-        default:
+    pj, e = NewPJ(ctx, def, "Prime Meridian", C.PJ_CATEGORY_PRIME_MERIDIAN)
+    if e == nil {
+        if C.proj_get_type(pj) != C.PJ_TYPE_PRIME_MERIDIAN {
+            C.proj_destroy(pj)
+            pj = nil
             e = fmt.Errorf("%v does not yield a Prime Meridian", def)
             return
         }
-    default                 : // WKT flavor wkt2_grammar.y : prime_meridian is missing from input !
-        var ce C.PROJ_STRING_LIST
-        pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
-        if pj == (*C.PJ)(nil) {
-            if ce != (C.PROJ_STRING_LIST)(nil) {
-                cm := C.listcat(ce)
-                defer C.free(unsafe.Pointer(cm))
-                defer C.proj_string_list_destroy(ce)
-                e = fmt.Errorf(C.GoString(cm))
-                //return
-            }
-            // not needed :
-            //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-            return
-        }
+        pm = &PrimeMeridian{pj:pj}
     }
-    if pj == (*C.PJ)(nil) {
-        e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-        return
-    }
-    if C.proj_get_type(pj) != C.PJ_TYPE_PRIME_MERIDIAN {
-        C.proj_destroy(pj)
-        pj = nil
-        e = fmt.Errorf("%v does not yield a Prime Meridian", def)
-        return
-    }
-    pm = &PrimeMeridian{pj:pj}
     return
 }
 
