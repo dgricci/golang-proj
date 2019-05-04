@@ -56,6 +56,7 @@ func TestPrimeMeridian ( t *testing.T ) {
 // TestPrimeMeridianWKT checks failure when asking for wrong ID
 func TestPrimeMeridianWKT ( t *testing.T ) {
     c := NewContext()
+    defer c.DestroyContext()
     s := `SPHEROID["WGS 84",6378137,298.257223563,"unused"]`
     pm, e := NewPrimeMeridian(c, s)
     if e == nil {
