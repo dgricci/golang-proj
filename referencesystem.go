@@ -9,6 +9,7 @@ import "C"
 
 import (
     "unsafe"
+    "strings"
     "fmt"
 )
 
@@ -47,15 +48,45 @@ const (
 func NewReferenceSystem ( ctx *Context, def ...string ) (crs *ReferenceSystem, e error) {
     var pj *C.PJ
     l := len(def)
-    if l == 0 {
+    switch l {
+    case 0 :
         e = fmt.Errorf(C.GoString(C.proj_errno_string(-1)))
         return
-    }
-    if l == 1 {
-        d := C.CString(def[0])
-        pj = C.proj_create((*ctx).pj, d)
-        C.free(unsafe.Pointer(d))
-    } else {
+    case 1 :
+        cdef := C.CString(def[0])
+        defer C.free(unsafe.Pointer(cdef))
+        switch dialect := C.proj_context_guess_wkt_dialect((*ctx).pj, cdef) ; GuessedWKTDialect(dialect) {
+        case GuessedWKTUnknown  : // URI
+            ac := strings.Split(def[0],":")
+            switch len(ac) {
+            case 2 :
+                cauth := C.CString(ac[0])
+                defer C.free(unsafe.Pointer(cauth))
+                cname := C.CString(ac[1])
+                defer C.free(unsafe.Pointer(cname))
+                pj = C.proj_create_from_database((*ctx).pj, cauth, cname, C.PJ_CATEGORY_CRS, 0, nil)
+            case 7 : // urn:ogc:def:meridian::EPSG:code
+                fallthrough
+            default:
+                pj = C.proj_create((*ctx).pj, cdef)
+            }
+        default    :
+            var ce C.PROJ_STRING_LIST
+            pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
+            if pj == (*C.PJ)(nil) {
+                if ce != (C.PROJ_STRING_LIST)(nil) {
+                    cm := C.listcat(ce)
+                    defer C.free(unsafe.Pointer(cm))
+                    defer C.proj_string_list_destroy(ce)
+                    e = fmt.Errorf(C.GoString(cm))
+                    return
+                }
+                // not needed :
+                //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+                //return
+            }
+        }
+    default:
         defs := C.makeStringArray(C.size_t(l))
         for i, partdef := range def {
             partd := C.CString(partdef)
