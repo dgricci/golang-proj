@@ -13,13 +13,25 @@ import (
 func TestOperation ( t *testing.T ) {
     s25832 := "EPSG:25832"
     s25833 := "EPSG:25833"
-    o, e := NewOperation(ctx, nil, s25832)
+    o, e := NewOperation(ctx, nil)
     if e == nil {
-        t.Errorf("Expected NewOperation to failed (ReferenceSystem)")
+        t.Errorf("Expected NewOperation to failed with no crs")
+    }
+    o, e = NewOperation(ctx, nil, s25832)
+    if e == nil {
+        t.Errorf("Expected NewOperation to failed with one crs")
     }
     o, e = NewOperation(ctx, &Area{}, s25832)
     if e == nil {
         t.Errorf("Expected NewOperation to failed (missing target CRS)")
+    }
+    o, e = NewOperation(ctx, &Area{}, "PSG:25832", s25833)
+    if e == nil {
+        t.Errorf("Expected NewOperation to failed with wrong source CRS)")
+    }
+    o, e = NewOperation(ctx, &Area{}, s25832, "PSG:25833")
+    if e == nil {
+        t.Errorf("Expected NewOperation to failed with wrong target CRS)")
     }
     o, e = NewOperation(ctx, &Area{}, s25832, s25833)
     if e != nil {
@@ -36,6 +48,12 @@ func TestOperation ( t *testing.T ) {
     }
     if o.TypeOf() != Transformation {
         t.Errorf("Expected Transformation ...")
+    }
+    if o.ProjString(ctx,Version4) != "" {// Transformation cannot be exported as a PROJ.4 string
+        t.Errorf("Unexpected non-empty proj-string")
+    }
+    if o.Wkt(ctx,WKTv2r2015) != "" {
+        t.Errorf("Unexpected non-empty WKT")
     }
     o.DestroyOperation()
     if !o.HandleIsNil() {
@@ -133,6 +151,29 @@ func TestOperation_3 (t *testing.T ) {
         defer ope.DestroyOperation()
         opeI := ope.Info()
         t.Errorf("Unexpected IGNF operation between '%s' and '%s' : %s", sREUN47GAUSSL, sRGAF09UTM20, opeI.Definition())
+    }
+}
+
+func TestOperationWkt ( t *testing.T ) {
+    c := NewContext()
+    defer c.DestroyContext()
+    s := `SPHEROID["WGS 84",6378137,298.257223563,"unused"]`
+    op, e := NewOperation(c, nil, s)
+    if e == nil {
+        t.Errorf("Unexpected creation of '%s' Operation", s)
+    }
+    s = `PROJCS["RGF93 / Lambert-93",GEOGCS["RGF93",DATUM["Reseau_Geodesique_Francais_1993",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6171"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4171"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",46.5],PARAMETER["central_meridian",3],PARAMETER["standard_parallel_1",49],PARAMETER["standard_parallel_2",44],PARAMETER["false_easting",700000],PARAMETER["false_northing",6600000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","2154"]]`
+    op, e = NewOperation(c, nil, s)
+    if e == nil {
+        t.Errorf("Unexpected creation of '%s' Operation", s)
+    }
+    s = `CONVERSION["PROJ-based coordinate operation",METHOD["PROJ-based operation method: +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m"]]`
+    op, e = NewOperation(c, nil, s)
+    if e != nil {
+        t.Error(e)
+    }
+    if op.TypeOf() != OtherCoordinateOperation {
+        t.Errorf("Expected OtherCoordinateOperation")
     }
 }
 

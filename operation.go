@@ -20,10 +20,6 @@ type Operation struct {
     pj *C.PJ
 }
 
-var (
-    operations map[string]*C.PJ_OPERATIONS
-)
-
 // NewOperation creates a reference system object from a proj-string, a WKT string,
 // or object code.
 //
@@ -78,8 +74,7 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
             }
         case l==2 && bbox != nil :// src and tgt CRSs
             // proj_create_crs_to_crs() is a high level function over
-            // proj_create_operations() : it can then returns several
-            // operations (Cf. projinfo -s  -o PROJ -s IGNF:NTFLAMB2E.NGF84 -t IGNF:ETRS89LCC.EVRF2000
+            // proj_create_operations() : it can then returns several operations (Cf. projinfo -s  -o PROJ -s IGNF:NTFLAMB2E.NGF84 -t IGNF:ETRS89LCC.EVRF2000)
             src, se := NewReferenceSystem(ctx, def[0])
             if se != nil { e = se ; return }
             defer src.DestroyReferenceSystem()
@@ -118,11 +113,16 @@ func NewOperation ( ctx *Context, bbox *Area, def ...string ) (op *Operation, e 
     default:// WKT
         var ce C.PROJ_STRING_LIST
         pj = C.proj_create_from_wkt((*ctx).pj, cdef, nil, nil, &ce)
-        if ce != (C.PROJ_STRING_LIST)(nil) {// FIXME : PROJ 6.1.0 should return an error with proj_context_errno
-            cm := C.listcat(ce)
-            defer C.free(unsafe.Pointer(cm))
-            defer C.proj_string_list_destroy(ce)
-            e = fmt.Errorf(C.GoString(cm))
+        if pj == (*C.PJ)(nil) {
+            if ce != (C.PROJ_STRING_LIST)(nil) {// FIXME : PROJ 6.1.0 should return an error with proj_context_errno
+                cm := C.listcat(ce)
+                defer C.free(unsafe.Pointer(cm))
+                defer C.proj_string_list_destroy(ce)
+                e = fmt.Errorf(C.GoString(cm))
+                //return
+            }
+            // not needed :
+            //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
             return
         }
     }
