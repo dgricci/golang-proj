@@ -31,20 +31,12 @@ func NewEllipsoid (ctx *Context, def string ) ( ell *Ellipsoid, e error ) {
         switch len(ac) {
         case 7 : // urn:ogc:def:ellipsoid::EPSG:code
             pj = C.proj_create((*ctx).pj, cdef)
-            if pj == (*C.PJ)(nil) {
-                e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-                return
-            }
         case 2 :
             cauth := C.CString(ac[0])
             defer C.free(unsafe.Pointer(cauth))
             cname := C.CString(ac[1])
             defer C.free(unsafe.Pointer(cname))
             pj = C.proj_create_from_database((*ctx).pj, cauth, cname, C.PJ_CATEGORY_ELLIPSOID, 0, nil)
-            if pj == (*C.PJ)(nil) {
-                e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-                return
-            }
         default:
             e = fmt.Errorf("%v does not yield an Ellipsoid", def)
             return
@@ -58,18 +50,22 @@ func NewEllipsoid (ctx *Context, def string ) ( ell *Ellipsoid, e error ) {
                 defer C.free(unsafe.Pointer(cm))
                 defer C.proj_string_list_destroy(ce)
                 e = fmt.Errorf(C.GoString(cm))
-                return
+                //return
             }
             // not needed :
             //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-            //return
-        }
-        if C.proj_get_type(pj) != C.PJ_TYPE_ELLIPSOID {
-            C.proj_destroy(pj)
-            pj = nil
-            e = fmt.Errorf("%v does not yield an Ellipsoid", def)
             return
         }
+    }
+    if pj == (*C.PJ)(nil) {
+        e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
+        return
+    }
+    if C.proj_get_type(pj) != C.PJ_TYPE_ELLIPSOID {
+        C.proj_destroy(pj)
+        pj = nil
+        e = fmt.Errorf("%v does not yield an Ellipsoid", def)
+        return
     }
     ell = &Ellipsoid{pj:pj}
     return
