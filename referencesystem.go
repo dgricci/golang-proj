@@ -79,11 +79,11 @@ func NewReferenceSystem ( ctx *Context, def ...string ) (crs *ReferenceSystem, e
                     defer C.free(unsafe.Pointer(cm))
                     defer C.proj_string_list_destroy(ce)
                     e = fmt.Errorf(C.GoString(cm))
-                    return
+                    //return
                 }
                 // not needed :
                 //e = fmt.Errorf(C.GoString(C.proj_errno_string(C.proj_context_errno((*ctx).pj))))
-                //return
+                return
             }
         }
     default:

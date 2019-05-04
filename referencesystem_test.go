@@ -75,6 +75,7 @@ func TestCrsMultiProjString ( t *testing.T ) {
 // TestCrsWkt checks WKT strings
 func TestCrsWkt ( t *testing.T ) {
     c := NewContext()
+    defer c.DestroyContext()
     s := `SPHEROID["WGS 84",6378137,298.257223563,"unused"]`
     crs, e := NewReferenceSystem(c, s)
     if e == nil {
