@@ -50,3 +50,27 @@ func TestDefaultContext ( t *testing.T) {
     }
 }
 
+// TestLogging checks the logging levels.
+func TestLogging ( t *testing.T) {
+    lvl := ctx.LogLevel()
+    if lvl != None {
+        t.Errorf("Expected default log level to be '%d', but got '%d'", None, lvl)
+    }
+    ctx.SetLogLevel(Error)
+    lvl = ctx.LogLevel()
+    if lvl != Error {
+        t.Errorf("Expected default log level to be '%d', but got '%d'", Error, lvl)
+    }
+    ctx.SetLogLevel(Debug)
+    lvl = ctx.LogLevel()
+    if lvl != Debug {
+        t.Errorf("Expected default log level to be '%d', but got '%d'", Debug, lvl)
+    }
+    ctx.SetLogLevel(Trace)
+    lvl = ctx.LogLevel()
+    if lvl != Trace {
+        t.Errorf("Expected default log level to be '%d', but got '%d'", Trace, lvl)
+    }
+    ctx.SetLogLevel(None)
+}
+
