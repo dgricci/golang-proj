@@ -27,6 +27,8 @@
  **/ 
 
 #include "wrapper.h"
+#include  "_cgo_export.h"
+
 
 char *getAuthorityFromPROJ ( PROJ_STRING_LIST l, int i ) {
     return l[i];
@@ -80,4 +82,17 @@ PJ_UNITS *getUnitFromPROJ ( int i ) {
     us = (PJ_UNITS *)proj_list_units(); 
     return us+i;
 }   
+
+void logFuncToGo ( void *udata, int llvl, const char *emsg ) {
+    switch (llvl) {
+    case PJ_LOG_ERROR :
+        LogOnCError((char *)emsg);
+    default           :
+    case PJ_LOG_DEBUG :
+    case PJ_LOG_TRACE :
+    case PJ_LOG_NONE  :
+        return ;
+    }
+    return;
+}
 

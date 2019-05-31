@@ -20,7 +20,7 @@ void PROJ_DLL destroyStringArray ( char ***t );
 double PROJ_DLL wrapper_proj_dmstor ( const char *dms );
 int PROJ_DLL nbUnitsFromPROJ ( void );
 PJ_UNITS PROJ_DLL *getUnitFromPROJ ( int i );
-
+void logFuncToGo ( void *udata, int llvl, const char *emsg );
 #ifdef __cplusplus
 }
 #endif
