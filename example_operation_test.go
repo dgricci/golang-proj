@@ -169,7 +169,7 @@ func ExampleOperation_locatablearray () {
     // inv:false
     // acc:-1.000000e+00
     // proj-string : +proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs +type=crs
-    // WKT : PROJCRS["RGF93 / Lambert-93",BASEGEOGCRS["RGF93",DATUM["Reseau Geodesique Francais 1993",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]]],CONVERSION["Lambert-93",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",46.5,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",3,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",49,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",44,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",700000,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",6600000,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting (X)",east,ORDER[1],LENGTHUNIT["metre",1]],AXIS["northing (Y)",north,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["France"],BBOX[41.15,-9.86,51.56,10.38]],ID["EPSG",2154]]
+    // WKT : PROJCRS["RGF93 / Lambert-93",BASEGEOGCRS["RGF93",DATUM["Reseau Geodesique Francais 1993",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4171]],CONVERSION["Lambert-93",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",46.5,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",3,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",49,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",44,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",700000,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",6600000,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting (X)",east,ORDER[1],LENGTHUNIT["metre",1]],AXIS["northing (Y)",north,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["France"],BBOX[41.15,-9.86,51.56,10.38]],ID["EPSG",2154]]
     // id :pipeline
     // dsc:Inverse of RGF93 to WGS 84 (1) + Lambert-93 (Inverse of RGF93 to WGS 84 (1) + Lambert-93)
     // def:proj=pipeline step proj=axisswap order=2,1 step proj=unitconvert xy_in=deg xy_out=rad step proj=lcc lat_0=46.5 lon_0=3 lat_1=49 lat_2=44 x_0=700000 y_0=6600000 ellps=GRS80
@@ -191,10 +191,6 @@ func ExampleOperation_locatablearray () {
     //         AXIS["geodetic longitude (Lon)",east,
     //           ORDER[2],
     //           ANGLEUNIT["degree",0.0174532925199433]],
-    //       USAGE[
-    //         SCOPE["unknown"],
-    //         AREA["World"],
-    //         BBOX[-90,-180,90,180]],
     //       ID["EPSG",4326]]],
     //   TARGETCRS[
     //     PROJCRS["RGF93 / Lambert-93",
@@ -203,7 +199,8 @@ func ExampleOperation_locatablearray () {
     //           ELLIPSOID["GRS 1980",6378137,298.257222101,
     //             LENGTHUNIT["metre",1]]],
     //         PRIMEM["Greenwich",0,
-    //           ANGLEUNIT["degree",0.0174532925199433]]],
+    //           ANGLEUNIT["degree",0.0174532925199433]],
+    //         ID["EPSG",4171]],
     //       CONVERSION["Lambert-93",
     //         METHOD["Lambert Conic Conformal (2SP)",
     //           ID["EPSG",9802]],
@@ -232,10 +229,6 @@ func ExampleOperation_locatablearray () {
     //         AXIS["northing (Y)",north,
     //           ORDER[2],
     //           LENGTHUNIT["metre",1]],
-    //       USAGE[
-    //         SCOPE["unknown"],
-    //         AREA["France"],
-    //         BBOX[41.15,-9.86,51.56,10.38]],
     //       ID["EPSG",2154]]],
     //   STEP[
     //     COORDINATEOPERATION["Inverse of RGF93 to WGS 84 (1)",
@@ -252,7 +245,8 @@ func ExampleOperation_locatablearray () {
     //               ANGLEUNIT["degree",0.0174532925199433]],
     //             AXIS["geodetic longitude (Lon)",east,
     //               ORDER[2],
-    //               ANGLEUNIT["degree",0.0174532925199433]]]],
+    //               ANGLEUNIT["degree",0.0174532925199433]],
+    //           ID["EPSG",4326]]],
     //       TARGETCRS[
     //         GEOGCRS["RGF93",
     //           DATUM["Reseau Geodesique Francais 1993",
@@ -266,7 +260,8 @@ func ExampleOperation_locatablearray () {
     //               ANGLEUNIT["degree",0.0174532925199433]],
     //             AXIS["geodetic longitude (Lon)",east,
     //               ORDER[2],
-    //               ANGLEUNIT["degree",0.0174532925199433]]]],
+    //               ANGLEUNIT["degree",0.0174532925199433]],
+    //           ID["EPSG",4171]]],
     //       METHOD["Geocentric translations (geog2D domain)",
     //         ID["EPSG",9603]],
     //       PARAMETER["X-axis translation",0,
@@ -279,10 +274,6 @@ func ExampleOperation_locatablearray () {
     //         LENGTHUNIT["metre",1],
     //         ID["EPSG",8607]],
     //       OPERATIONACCURACY[1.0],
-    //       USAGE[
-    //         SCOPE["unknown"],
-    //         AREA["France"],
-    //         BBOX[41.15,-9.86,51.56,10.38]],
     //       ID["INVERSE(EPSG)",1671]]],
     //   STEP[
     //     CONVERSION["Lambert-93",

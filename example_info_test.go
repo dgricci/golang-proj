@@ -13,10 +13,10 @@ func ExampleInfo () {
     fmt.Printf("%d\n", Patch())
 
     // Output:
-    // Rel. 6.0.0, March 1st, 2019
-    // 6.0.0
+    // Rel. 6.1.0, May 15th, 2019
+    // 6.1.0
     // 6
-    // 0
+    // 1
     // 0
 }
 

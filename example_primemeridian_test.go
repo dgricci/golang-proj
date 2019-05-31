@@ -34,7 +34,7 @@ func ExamplePrimeMeridian () {
     // l :      0.00
     // f :      0.02
     // u :degree
-    // proj-string : ''
+    // proj-string : '+proj=noop'
     // WKT : PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]]
 
 }
