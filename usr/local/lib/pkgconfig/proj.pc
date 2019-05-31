@@ -2,10 +2,11 @@ prefix=/home/ricci/src/go/src/osgeo.org/proj/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
+datadir=${prefix}/share/proj
 
 Name: proj
 Description: Cartographic Projections Library.
 Requires:
-Version: 6.0.0
+Version: 6.1.0
 Libs: -L${libdir} -lproj
 Cflags: -I${includedir}
