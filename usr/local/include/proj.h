@@ -1,6 +1,6 @@
 /******************************************************************************
- * Project:  PROJ.4
- * Purpose:  Revised, experimental API for PROJ.4, intended as the foundation
+ * Project:  PROJ
+ * Purpose:  Revised, experimental API for PROJ, intended as the foundation
  *           for added geodetic functionality.
  *
  *           The original proj API (defined previously in projects.h) has grown
@@ -154,7 +154,7 @@ extern "C" {
 /* The version numbers should be updated with every release! **/
 #define PROJ_VERSION_MAJOR 6
 #define PROJ_VERSION_MINOR 1
-#define PROJ_VERSION_PATCH 0
+#define PROJ_VERSION_PATCH 1
 
 extern char const PROJ_DLL pj_release[]; /* global release id string */
 
@@ -277,7 +277,8 @@ struct PJ_INFO {
     const char  *version;           /* Full version number                  */
     const char  *searchpath;        /* Paths where init and grid files are  */
                                     /* looked for. Paths are separated by   */
-                                    /* semi-colons.                         */
+                                    /* semi-colons on Windows, and colons   */
+                                    /* on non-Windows platforms.            */
     const char * const *paths;
     size_t path_count;
 };
