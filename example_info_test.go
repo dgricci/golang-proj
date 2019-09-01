@@ -13,11 +13,11 @@ func ExampleInfo () {
     fmt.Printf("%d\n", Patch())
 
     // Output:
-    // Rel. 6.1.1, July 1st, 2019
-    // 6.1.1
+    // Rel. 6.2.0, September 1st, 2019
+    // 6.2.0
     // 6
-    // 1
-    // 1
+    // 2
+    // 0
 }
 
 func ExampleISOInfo_referencesystem () {

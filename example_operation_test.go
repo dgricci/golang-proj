@@ -274,7 +274,8 @@ func ExampleOperation_locatablearray () {
     //         LENGTHUNIT["metre",1],
     //         ID["EPSG",8607]],
     //       OPERATIONACCURACY[1.0],
-    //       ID["INVERSE(EPSG)",1671]]],
+    //       ID["INVERSE(EPSG)",1671],
+    //       REMARK["Parameter values from RGF93 to ETRS89 (1) (code 1591) assuming that ETRS89 is equivalent to WGS 84 within the accuracy of the transformation."]]],
     //   STEP[
     //     CONVERSION["Lambert-93",
     //       METHOD["Lambert Conic Conformal (2SP)",

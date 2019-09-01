@@ -13,8 +13,8 @@ func TestInfo ( t *testing.T ) {
     if r == "" {
         t.Errorf("Expected release set")
     }
-    if r != "Rel. 6.1.1, July 1st, 2019" {
-        t.Errorf("Expected release to equal 'Rel. 6.1.1, July 1st, 2019'")
+    if r != "Rel. 6.2.0, September 1st, 2019" {
+        t.Errorf("Expected release to equal 'Rel. 6.2.0, September 1st, 2019'")
     }
 }
 

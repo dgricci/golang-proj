@@ -50,8 +50,8 @@ func TestDefaultContext ( t *testing.T) {
     }
 }
 
-// TestLogging checks the logging levels.
-func TestLogging ( t *testing.T) {
+// TestCtxLogging checks the logging levels.
+func TestCtxLogging ( t *testing.T) {
     lvl := ctx.LogLevel()
     if lvl != None {
         t.Errorf("Expected default log level to be '%d', but got '%d'", None, lvl)

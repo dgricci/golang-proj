@@ -70,13 +70,13 @@ func (ctx *Context) IsAnAuthority ( name string ) bool {
 // LogLevel returns the current log level of PROJ.
 //
 func (ctx *Context) LogLevel ( ) LoggingLevel {
-    return (LoggingLevel)(C.proj_log_level( (*ctx).pj, C.PJ_LOG_TELL) )
+    return LogLevel(ctx)
 }
 
 // SetLogLevel assigns the log level of PROJ.
 //
 func (ctx *Context) SetLogLevel ( lvl LoggingLevel ) {
-    _ = C.proj_log_level( (*ctx).pj, (C.PJ_LOG_LEVEL)(lvl) )
+    SetLogLevel(ctx,lvl)
 }
 
 // init package initialisation

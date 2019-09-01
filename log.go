@@ -31,38 +31,57 @@ var (
   qlog *log.Logger
   // LoggerPrefix for logged messages
   LoggerPrefix = "[proj]: "
+  // LoggerFlags for default logging
+  LoggerFlags = log.LstdFlags
 )
 
 // LogOnCError wraps message from PROJ to this logger
 //
 //export LogOnCError
-func LogOnCError ( err *C.char ) {
-    LogOnError(fmt.Errorf(C.GoString(err)))
-}
-
-// LogOnError function helper for logging error
-//
-func LogOnError ( err error ) {
-    if err.(error) != nil {
-        qlog.Printf("%v", err.(error))
+func LogOnCError ( msg *C.char ) {
+    if msg != nil {
+        LogOnError(fmt.Errorf(C.GoString(msg)))
+        return
     }
 }
 
-// Log function returns the underlaying logger
+// LogOnError is a helper for logging error
+//
+func LogOnError ( err error ) {
+    if err != nil {
+        qlog.Printf("%v", err.(error))
+        return
+    }
+}
+
+// Log returns the underlaying logger
 //
 func Log () *log.Logger {
     return qlog
 }
 
-// SetLog function overrides the C logging function with `logFuncToGo`
+// SetLog overrides the C logging function with `logFuncToGo`
 //
 func SetLog ( ctx *Context ) {
     C.proj_log_func((*ctx).pj, nil, C.PJ_LOG_FUNCTION(C.logFuncToGo));
 }
 
-// init package initialisation
+// LogLevel returns the current log level of PROJ.
+//
+func LogLevel ( ctx *Context ) LoggingLevel {
+    return (LoggingLevel)(C.proj_log_level( (*ctx).pj, C.PJ_LOG_TELL) )
+}
+
+// SetLogLevel assigns the log level of PROJ.
+//
+func SetLogLevel ( ctx *Context, lvl LoggingLevel ) {
+    _ = C.proj_log_level( (*ctx).pj, (C.PJ_LOG_LEVEL)(lvl) )
+}
+
+// init package initialisation : logger writes to os.Stderr using LoggerPrefix
+// and LoggerFlags as default values.
 //
 func init () {
-    qlog= log.New(os.Stderr, LoggerPrefix, log.LstdFlags)
+    qlog= log.New(os.Stderr, LoggerPrefix, LoggerFlags)
 }
 
