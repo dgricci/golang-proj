@@ -57,7 +57,7 @@ func TestEllipsoidWKT ( t *testing.T ) {
     defer c.DestroyContext()
     s := `SPHEROID["WGS 84",6378137,298.257223563,"unused"]`
     ell, e := NewEllipsoid(c, s)
-    if e == nil {
+    if e != nil {
         t.Errorf("Unexpected creation of '%s' Ellipsoid", s)
     }
     s = `CONVERSION["PROJ-based coordinate operation",METHOD["PROJ-based operation method: +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m"]]`

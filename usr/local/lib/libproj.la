@@ -8,7 +8,7 @@
 dlname='libproj.so.15'
 
 # Names of this library.
-library_names='libproj.so.15.2.0 libproj.so.15 libproj.so'
+library_names='libproj.so.15.3.1 libproj.so.15 libproj.so'
 
 # The name of the static archive.
 old_library=''
@@ -23,9 +23,9 @@ dependency_libs=' /usr/lib/x86_64-linux-gnu/libsqlite3.la -lpthread'
 weak_library_names=''
 
 # Version information for libproj.
-current=17
-age=2
-revision=0
+current=18
+age=3
+revision=1
 
 # Is this an already installed library?
 installed=yes

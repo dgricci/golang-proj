@@ -7,6 +7,7 @@ datadir=${prefix}/share/proj
 Name: proj
 Description: Cartographic Projections Library.
 Requires:
-Version: 6.2.0
+Version: 6.3.1
 Libs: -L${libdir} -lproj
+Libs.Private: -lsqlite3 -lstdc++
 Cflags: -I${includedir}

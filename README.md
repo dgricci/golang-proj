@@ -16,9 +16,19 @@ Revision:
 To provide a wrapper in Golang for [PROJ](https://proj4.org/index.html) and
 learn `cgo` mechanism :smiley:
 
-## Compiling PROJ 6.0.0 ##
+## Compiling PROJ 6.x.y ##
 
-In the `$GOPATH/src/osgeo.org/proj/usr/local/src/proj-x.y.z` directory :
+Download source file via [proj-6.x.y.tar.gz](https://download.osgeo.org/proj/proj-6.x.y.tar.gz).
+Download datum grids via [proj-datumgrid-n.m.zip](https://download.osgeo.org/proj/proj-datum-n.m.zip.html).
+
+```bash
+$ cd $GOPATH/src/osgeo.org/proj/usr/local/src
+$ tar xzf PATH_TO/proj-6.x.y.tar.gz
+$ cd proj-6.x.y/data
+$ unzip PATH_TO/proj-datumgrid-n.m.zip
+```
+ 
+In the `$GOPATH/src/osgeo.org/proj/usr/local/src/proj-6.x.y` directory :
 
 ```bash
 export PROJ_LIB=$GOPATH/src/osgeo.org/proj/usr/local/share/proj
@@ -29,6 +39,10 @@ make check
 make clean
 unset PROJ_LIB
 ```
+
+Il faut aussi passer dans les dossiers
+`$GOPATH/src/osgeo.org/proj/usr/local/{bin,include,lib}` et retirer les
+fichiers "anciens" (dont la date est antérieure à l'installation).
 
 ## Building the project ##
 
