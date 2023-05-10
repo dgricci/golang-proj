@@ -156,6 +156,22 @@ func (op *Operation) fwdinv ( d Direction, aC *Coordinate ) ( aR *Coordinate, e 
     return
 }
 
+func (op *Operation) fwdinv_array(d Direction, aCArray []Coordinate) (aR []Coordinate, e error) {
+    ccArray := make([]C.PJ_COORD, len(aCArray))
+    _ = C.proj_errno_reset((*op).pj)
+    // make a copy not to change coord in case of error :
+    _ = C.memcpy(unsafe.Pointer(&ccArray[0]), unsafe.Pointer(&(aCArray[0])), C.sizeof_PJ_COORD*C.size_t(len(aCArray)))
+    En := C.proj_trans_array((*op).pj, C.PJ_DIRECTION(d), C.size_t(len(ccArray)), (*C.PJ_COORD)(&ccArray[0]))
+    if En != C.int(0) {
+        e = fmt.Errorf(C.GoString(C.proj_errno_string(En)))
+    } else {
+        // everything's ok, copy back :
+        _ = C.memcpy(unsafe.Pointer(&(aCArray[0])), unsafe.Pointer(&ccArray[0]), C.sizeof_PJ_COORD*C.size_t(len(aCArray)))
+        aR = aCArray
+    }
+    return
+}
+
 // Transform applies the transformation of coordinates to object
 // implementing `Locatable` either from or to the CRS.
 // Returns the object with transformed coordinates or nil on error.
@@ -165,6 +181,14 @@ func (op *Operation) Transform ( d Direction, c Locatable ) ( r Locatable, e err
     xyzt, e = op.fwdinv(d, xyzt)
     if e != nil { return }
     c.SetLocation(xyzt)
+    r = c
+    return
+}
+
+
+func (op *Operation) TransformArray(d Direction, c []Coordinate) (r []Coordinate, e error) {
+
+    c, e = op.fwdinv_array(d, c)
     r = c
     return
 }
